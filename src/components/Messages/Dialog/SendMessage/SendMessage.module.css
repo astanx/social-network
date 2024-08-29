@@ -1,0 +1,8 @@
+.SendMessage {
+    display: flex;
+    justify-content: center;
+}
+.SendMessage button {
+    margin-top: 10px;
+    height: 30px;
+}

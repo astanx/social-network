@@ -1,0 +1,10 @@
+.content {
+  grid-area: content;
+  background-color: teal;
+  display: grid;
+  grid-template-columns: 2fr 6fr;
+}
+
+.active {
+  color: yellowgreen;
+}

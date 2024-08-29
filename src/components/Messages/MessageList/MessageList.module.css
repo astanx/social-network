@@ -1,0 +1,7 @@
+.MessageList {
+    border-right: 1px solid cyan;
+}
+
+.MessageList a {
+    text-decoration: none;
+}

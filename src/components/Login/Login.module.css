@@ -1,0 +1,18 @@
+.content {
+  grid-area: content;
+  background-color: teal;
+}
+
+.content h3 {
+  color: whitesmoke;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 30px auto;
+}

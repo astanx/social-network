@@ -1,0 +1,38 @@
+.header {
+    grid-area: header;
+    background-color: teal;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .header div {
+    background-color: teal;
+  }
+  
+  .header a {
+    color: whitesmoke;
+    text-decoration: none;
+  }
+  
+  .header img {
+    width: 60px;
+  }
+  
+  .login {
+    color: whitesmoke;
+    font-size: 20px;
+    position: relative;
+    cursor: pointer; /* Make it clear that this is clickable */
+  }
+  
+  .modal {
+    position: absolute;
+    background-color: white; /* Background for the modal */
+    color: black; /* Text color */
+    padding: 10px;
+    border: 1px solid black; /* Border for visibility */
+    z-index: 1000; /* Ensure it appears above other elements */
+    cursor: pointer;
+  }

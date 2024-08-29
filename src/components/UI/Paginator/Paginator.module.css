@@ -1,0 +1,14 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    color: whitesmoke;
+  }
+  
+  .pagination span {
+    cursor: pointer;
+  }
+  
+  .selected {
+    font-weight: bold;
+  }

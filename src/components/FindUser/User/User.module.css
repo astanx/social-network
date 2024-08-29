@@ -1,0 +1,29 @@
+.logo {
+    width: 60px;
+    height: 60px;
+}
+
+.User {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 10px;
+    border: 2px solid cyan;
+    max-height: 200px;
+}
+
+.link {
+    text-decoration: none;
+    color: whitesmoke;
+    display: flex;
+    justify-content: space-between;
+}
+
+.UserInfo {
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+    gap: 5px;
+    padding: 5px;
+
+}

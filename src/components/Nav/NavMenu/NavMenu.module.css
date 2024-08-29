@@ -1,0 +1,16 @@
+.navMenu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    gap: 20px;
+}
+
+.item {
+    color: white;
+    text-decoration: none;
+}
+
+.activeLink {
+    color: yellowgreen;
+}

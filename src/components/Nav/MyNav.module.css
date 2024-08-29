@@ -1,0 +1,17 @@
+.nav {
+    grid-area: nav;
+    background-color: teal;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 50vh;
+}
+
+.item {
+    color: white;
+    text-decoration: none;
+}
+
+.activeLink {
+    color: yellowgreen;
+}

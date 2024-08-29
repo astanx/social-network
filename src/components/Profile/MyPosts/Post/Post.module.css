@@ -1,0 +1,10 @@
+.Post {
+    border: 1px solid cyan;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.deletePost {
+    color: whitesmoke;
+    cursor: pointer;
+}

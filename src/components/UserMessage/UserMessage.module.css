@@ -1,0 +1,49 @@
+.user {
+    display: flex;
+    gap: 10px;
+    color: white;
+    flex-direction: column;
+}
+
+.user div {
+    display: flex;
+    gap: 5px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+}
+.delete{
+    margin-left: 100px;
+}
+.message {
+    display: flex;
+    text-decoration: none;
+    gap: 10px;
+    color: whitesmoke;
+    margin: 20px;
+    text-align: left;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.messageCont {
+    display: flex;
+
+}
+.viewed {
+    margin-top: 80px;
+    margin-left: -50px;
+}
+
+.viewedStatus {
+    height: 30px;
+    width: 30px;
+}
+
+.logoMessage {
+    width: 90px;
+    height: 90px;
+    margin-left: 30px;
+}
