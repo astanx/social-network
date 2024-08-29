@@ -3,12 +3,14 @@ import classes from "./Messages.module.css";
 import MessageList from "./MessageList/MessageList";
 import Dialog from "./Dialog/Dialog";
 import Preloader from "../UI/Preloader/Preloader";
+import { useParams } from "react-router-dom";
 
 const Messages = (props) => {
-
+  const {userId} = useParams()
   useEffect(() => {
     props.getMessages();
-  }, []);
+    props.getDialog(userId)
+  }, [userId]);
 
   return props.isFetching ? (
     <Preloader />
