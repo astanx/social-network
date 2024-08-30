@@ -10,6 +10,7 @@ const Profile = (props) => {
         createDialog={props.createDialog}
         updateStatus={props.updateStatus}
         status={props.status}
+        photo={props.photo}
         id={props.id}
         userProfile={props.userProfile}
       />

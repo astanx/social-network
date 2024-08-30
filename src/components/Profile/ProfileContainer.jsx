@@ -45,6 +45,7 @@ let mapStateToProps = (state) => {
     isFetching: state.profile.isFetching,
     userProfile: state.profile.userProfile,
     status: state.profile.status,
+    photo: state.profile.photo,
   };
 };
 const ProfileContainer = compose(

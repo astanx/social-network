@@ -47,6 +47,7 @@ let mapStateToProps = (state) => {
     userProfile: state.profile.userProfile,
     isLogined: state.login.isLogined,
     status: state.profile.status,
+    photo: state.profile.photo
   };
 };
 

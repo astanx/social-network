@@ -8,20 +8,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  color: whitesmoke;
-}
 
-.pagination span {
-  cursor: pointer;
-}
-
-.selected {
-  font-weight: bold;
-}
 .preloader{
   width: 100%;
   height: 400px;

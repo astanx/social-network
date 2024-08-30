@@ -33,7 +33,11 @@ export const profileAPI = {
     return intense.get(`profile/status/${userId}`);
   },
   setPhoto: (image) => {
-    return intense.put(`profile/photo`, { image });
+    const formData = new FormData ()
+    formData.append('image', image)
+    return intense.put(`profile/photo`,formData, { headers: {
+      'Content-Type': 'multipart/form-data'
+    } });
   },
 };
 

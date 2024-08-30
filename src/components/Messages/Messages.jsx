@@ -6,10 +6,12 @@ import Preloader from "../UI/Preloader/Preloader";
 import { useParams } from "react-router-dom";
 
 const Messages = (props) => {
-  const {userId} = useParams()
+  const { userId } = useParams();
   useEffect(() => {
     props.getMessages();
-    props.getDialog(userId)
+    if (userId) {
+      props.getDialog(userId);
+    }
   }, [userId]);
 
   return props.isFetching ? (
@@ -21,7 +23,7 @@ const Messages = (props) => {
         MessagesData={props.messagesData}
       />
       <Dialog
-       deleteMessage={props.deleteMessage}
+        deleteMessage={props.deleteMessage}
         login={props.login}
         DialogData={props.dialogData}
         sendMessage={props.sendMessage}

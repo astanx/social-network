@@ -7,6 +7,8 @@ import MyButton from "../../UI/Button/MyButton";
 import { NavLink, useParams } from "react-router-dom";
 
 const MyUser = (props) => {
+  console.log(props);
+  
   const { userId } = useParams();
   const [status, changeStatus] = useState(props.status ? props.status : "");
   const [isEditing, setIsEditing] = useState(false);
@@ -14,12 +16,26 @@ const MyUser = (props) => {
     <div className={classes.Info}>
       <img
         src={
-          props.userProfile.photos.small ? props.userProfile.photos.small : logo
+          props.userProfile.photos.small
+            ? props.userProfile.photos.small
+            : props.photo
+            ? props.photo
+            : logo
         }
         className={classes.logo}
       />
       <AddImage />
-      {!props.id ? <NavLink to={`/messages/${userId}`}> <MyButton name="start dialog" onClick={() => {props.createDialog(userId)}} /> </NavLink>  : null}
+      {!props.id ? (
+        <NavLink to={`/messages/${userId}`}>
+          {" "}
+          <MyButton
+            name="start dialog"
+            onClick={() => {
+              props.createDialog(userId);
+            }}
+          />{" "}
+        </NavLink>
+      ) : null}
       <div className={classes.Description}>
         <div>
           <span>Name: </span>

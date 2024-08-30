@@ -1,5 +1,5 @@
-
-import { profileAPI} from "../api/api";
+import { act } from "react";
+import { profileAPI } from "../api/api";
 
 let initialState = {
   PostData: [],
@@ -7,6 +7,7 @@ let initialState = {
   isFetching: false,
   userProfile: null,
   status: null,
+  photo: null,
 };
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -41,10 +42,21 @@ const profileReducer = (state = initialState, action) => {
         ...state,
         PostData: [...state.PostData.filter((p) => p.id !== action.postId)],
       };
+    case "SET_PHOTO":
+      console.log(action.photo);
+      
+      return {
+        ...state,
+        photo: action.photo,
+      };
     default:
       return state;
   }
 };
+export const setPhotoAC = (photo) => ({
+  type: "SET_PHOTO",
+  photo,
+});
 export const setFetching = (isFetching) => ({
   type: "SET_FETCHING",
   isFetching,
@@ -58,11 +70,11 @@ export const addPost = (userName, postText) => ({
 export const deletePost = (postId) => ({ type: "DELETE_POST", postId });
 export const setStatus = (status) => ({ type: "SET_STATUS", status });
 
-export const setPhoto = async (photo) => {
-  console.log(photo);
+export const setPhoto =  (photo) => async(dispatch) => {
   const response = await profileAPI.setPhoto(photo);
-
-  console.log(response);
+  console.log(response.data.data.photos.small);
+  
+  dispatch(setPhotoAC(response.data.data.photos.small))
 };
 export const getProfile = (userId) => async (dispatch) => {
   dispatch(setFetching(true));
