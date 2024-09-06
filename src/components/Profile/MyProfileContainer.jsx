@@ -1,10 +1,12 @@
 import { connect } from "react-redux";
 import {
   addPost,
+  changeProfile,
   deletePost,
   getProfile,
+  setPhoto,
   updateStatus,
-} from "../../redux/profileReducer";
+} from "../../redux/profileReducer.ts";
 import Profile from "./Profile";
 import React, { useEffect } from "react";
 
@@ -57,6 +59,8 @@ const MyProfileContainer = compose(
     deletePost,
     getProfile,
     updateStatus,
+    setPhoto,
+    changeProfile
   }),
   withAuth
 )(MyProfileCont);

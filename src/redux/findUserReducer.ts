@@ -1,6 +1,32 @@
 import { userAPI } from "../api/api";
+import { SetFetchingActionType } from "./types/types";
 
-let initialState = {
+
+type UserType = {
+  name: string;
+  id: number;
+  uniqueUrlName: null | string;
+  photos: {
+    small: null | string;
+    large: null | string;
+  };
+  status: null | string;
+  followed: boolean;
+};
+export type InitialStateType = {
+  users: Array<UserType>,
+  curentPage: number,
+  pageSize: number,
+  pagesCount: number,
+  currentPage: number,
+  minPagination: number,
+  maxPagination: number,
+  termText: string,
+  term: null | string,
+  isFetching: boolean,
+  followingInProgress: Array<number>,
+}
+let initialState: InitialStateType = {
   users: [],
   curentPage: 1,
   pageSize: 10,
@@ -13,14 +39,17 @@ let initialState = {
   isFetching: false,
   followingInProgress: [],
 };
-const findUserReducer = (state = initialState, action) => {
+
+
+const findUserReducer = (state = initialState, action): InitialStateType => {
   switch (action.type) {
     case "FOLLOW":
       return {
+        
         ...state,
-        users: state.users.map((u) => {
+        users: state.users.map((u: any) => {
           if (u.id === action.id) {
-            return { ...u, followed: true, followers: u.followers + 1 };
+            return { ...u, followed: true};
           }
           return u;
         }),
@@ -28,22 +57,18 @@ const findUserReducer = (state = initialState, action) => {
     case "UNFOLLOW":
       return {
         ...state,
-        users: state.users.map((u) => {
+        users: state.users.map((u: any) => {
           if (u.id === action.id) {
-            return { ...u, followed: false, followers: u.followers - 1 };
+            return { ...u, followed: false};
           }
           return u;
         }),
       };
     case "SET_USERS":
+
       return {
         ...state,
-        users: action.users.map((u) => {
-          if (!u.followers) {
-            return { ...u, followers: 0 };
-          }
-          return u;
-        }),
+        users: action.users
       };
     case "SET_PAGES_COUNT":
       return {
@@ -87,28 +112,59 @@ const findUserReducer = (state = initialState, action) => {
       return state;
   }
 };
+type FollowSuccessActionType = {
+  type: "FOLLOW", id : number
+}
+export const followSuccess = (id: number): FollowSuccessActionType => ({ type: "FOLLOW", id });
+type UnfollowSuccessActionType = {
+  type: "UNFOLLOW", id: number
+}
+export const unfollowSuccess = (id: number): UnfollowSuccessActionType => ({ type: "UNFOLLOW", id });
+type SetUsersActionType ={
+  type: "SET_USERS", users:Array<UserType>  
+}
+export const setUsers = (users): SetUsersActionType => ({ type: "SET_USERS", users });
 
-export const followSuccess = (id) => ({ type: "FOLLOW", id });
-export const unfollowSuccess = (id) => ({ type: "UNFOLLOW", id });
-export const setUsers = (users) => ({ type: "SET_USERS", users });
-export const setPageCount = (count) => ({ type: "SET_PAGES_COUNT", count });
-export const changePage = (page) => ({ type: "CHANGE_PAGE", page });
-export const changePagination = (min, max) => ({
+type SetPageCountActionType = {
+  type: "SET_PAGES_COUNT", count: number
+}
+export const setPageCount = (count: number): SetPageCountActionType => ({ type: "SET_PAGES_COUNT", count });
+type ChangePageActionType = {
+  type: "CHANGE_PAGE", page:number
+}
+export const changePage = (page: number): ChangePageActionType => ({ type: "CHANGE_PAGE", page });
+
+type ChangePaginationActionType = {
+  type: "CHANGE_PAGINATION",
+  min: number,
+  max: number,
+}
+export const changePagination = (min: number, max: number): ChangePaginationActionType => ({
   type: "CHANGE_PAGINATION",
   min,
   max,
 });
-export const changeTerm = (termText) => ({ type: "CHANGE_TERM", termText });
+type ChangeTermActionType = {
+  type: "CHANGE_TERM", termText: string
+}
+export const changeTerm = (termText: string): ChangeTermActionType => ({ type: "CHANGE_TERM", termText });
 export const setTerm = () => ({ type: "SET_TERM" });
-export const setFetching = (isFetching) => ({
+
+
+export const setFetching = (isFetching: boolean): SetFetchingActionType => ({
   type: "SET_FETCHING",
   isFetching,
 });
-export const followingProgress = (id) => ({
+
+type FollowingProgressActionType = {
+  type: "SET_FOLLOWING_STATUS",
+  id: number,
+}
+export const followingProgress = (id: number): FollowingProgressActionType => ({
   type: "SET_FOLLOWING_STATUS",
   id,
 });
-export const getUsers = (pageSize, currentPage, term) => async (dispatch) => {
+export const getUsers = (pageSize: number, currentPage: number, term: string | null) => async (dispatch) => {
   dispatch(setFetching(true));
   const response = await userAPI.getUsers(pageSize, currentPage, term);
 

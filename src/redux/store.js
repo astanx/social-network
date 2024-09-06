@@ -1,7 +1,7 @@
 import logo from "./../components/UI/Images/logo.png";
 import getTime from "../components/UI/Profile/MyPosts/getTime";
-import messagesReducer from "./messagesReducer";
-import profileReducer from "./profileReducer";
+import messagesReducer from "./messagesReducer.ts";
+import profileReducer from "./profileReducer.ts";
 const store = {
   _callSubscriber() {},
   _state: {

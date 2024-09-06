@@ -6,7 +6,7 @@ import {
   getMessages,
   sendMessage,
   
-} from "../../redux/messagesReducer";
+} from "../../redux/messagesReducer.ts";
 import withAuth from "../hoc/withAuth";
 import { compose } from "redux";
 

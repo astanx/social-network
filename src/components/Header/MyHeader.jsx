@@ -31,7 +31,7 @@ const MyHeader = (props) => {
           <div
             className={classes.modal}
             onClick={() => {
-              props.Logout();
+              props.logout();
               toggleModal()
             }}
           >

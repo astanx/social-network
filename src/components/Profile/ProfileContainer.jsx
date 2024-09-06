@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
-import { addPost, getProfile  } from "../../redux/profileReducer";
+import { addPost, changeProfile, getProfile, setPhoto  } from "../../redux/profileReducer.ts";
 import Profile from "./Profile";
 import React, { useEffect } from "react";
 import preloader from "./../UI/Images/bouncing-circles.svg";
 import classes from "./MyProfile.module.css";
 import { useParams } from "react-router-dom";
 import { compose } from "redux";
-import { createDialog } from "../../redux/messagesReducer";
+import { createDialog } from "../../redux/messagesReducer.ts";
 import Preloader from "../UI/Preloader/Preloader";
 
 const ProfileCont = (props) => {
@@ -51,9 +51,10 @@ let mapStateToProps = (state) => {
 const ProfileContainer = compose(
   connect(mapStateToProps, {
     addPost,
-
+    setPhoto,
     getProfile,
-    createDialog
+    createDialog,
+    changeProfile,
   })
 )(ProfileCont);
 

@@ -17,7 +17,6 @@ const FindUser = (props) => {
       key={user.id}
       name={user.name}
       followers={user.followers}
-      //location={user.location}
       followed={user.followed}
       followSuccess={props.followSuccess}
       unfollowSuccess={props.unfollowSuccess}

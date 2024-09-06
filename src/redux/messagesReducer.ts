@@ -1,9 +1,12 @@
 import { dialogAPI } from "../api/api";
+import { SetFetchingActionType } from "./types/types";
+
+export type InitialStateType = typeof initialState;
 
 let initialState = {
   MessagesData: [],
   DialogData: {
-    items: [],
+    items: [] as Array<SendMessageData>,
   },
   isFetching: false,
 };
@@ -23,6 +26,7 @@ const messagesReducer = (state = initialState, action) => {
         MessagesData: action.messages,
       };
     case "SET_DIALOG":
+
       return {
         ...state,
         DialogData: action.dialog,
@@ -33,13 +37,14 @@ const messagesReducer = (state = initialState, action) => {
         isFetching: action.isFetching,
       };
     case "DELETE_MESSAGE":
-
       return {
         ...state,
         DialogData: {
           ...state.DialogData,
           items: [
-            ...state.DialogData.items.filter((d) => d.id !== action.messageId),
+            ...state.DialogData.items.filter(
+              (d: any) => d.id !== action.messageId
+            ),
           ],
         },
       };
@@ -48,26 +53,97 @@ const messagesReducer = (state = initialState, action) => {
   }
 };
 
-export const sendMessageAC = (data) => {
+type SendMessageData = {
+  id: string,
+  body: string,
+  translatedBody: null,
+  addedAt: string,
+  senderId: number,
+  senderName: string,
+  recipientId: number,
+  recipientName: string,
+  viewed: boolean,
+  deletedBySender: boolean,
+  deletedByRecipient: boolean,
+  isSpam: boolean,
+  distributionId: null
+}
+
+type SendMessageACType = {
+  type: "SEND_MESSAGE";
+  data: SendMessageData;
+};
+
+export const sendMessageAC = (data: SendMessageData): SendMessageACType => {
   return {
     type: "SEND_MESSAGE",
     data,
   };
 };
-export const setFetching = (isFetching) => ({
+
+
+export const setFetching = (isFetching: boolean): SetFetchingActionType => ({
   type: "SET_FETCHING",
   isFetching,
 });
 
-export const setMessagesList = (messages) => ({
+type SetMessagesListActionType = {
+  type: "SET_MESSAGES_LIST";
+  messages: SetMessagesListData;
+};
+
+type SetMessagesListData = {
+  id: number,
+  userName: string,
+  hasNewMessages: boolean,
+  lastDialogActivityDate: string,
+  lastUserActivityDate: string,
+  newMessagesCount: number,
+  photos: {
+      small: null | string,
+      large: null | string
+  }
+}
+export const setMessagesList = (messages: SetMessagesListData): SetMessagesListActionType => ({
   type: "SET_MESSAGES_LIST",
   messages,
 });
-export const deleteMessageAC = (messageId) => ({
+
+type DeleteMessageACType = {
+  type: "DELETE_MESSAGE";
+  messageId: number;
+};
+export const deleteMessageAC = (messageId: number): DeleteMessageACType => ({
   type: "DELETE_MESSAGE",
   messageId,
 });
-export const setDialog = (dialog) => ({ type: "SET_DIALOG", dialog });
+
+type SetDialogActionType = {
+  type: "SET_DIALOG";
+  dialog: SetDialogData;
+};
+
+type SetDialogData = {
+  
+    items: [{
+      id: number,
+      body: string,
+      translatedBody: null,
+      addedAt: string,
+      senderId: number,
+      senderName: string,
+      recipientId: number,
+      viewed: boolean
+  }],
+    totalCount: number,
+    error: null
+
+}
+
+export const setDialog = (dialog: SetDialogData): SetDialogActionType => ({
+  type: "SET_DIALOG",
+  dialog,
+});
 
 export const createDialog = (userId) => (dispatch) => {
   dialogAPI.createDialog(userId).then((response) => {});

@@ -39,18 +39,24 @@ export const profileAPI = {
       'Content-Type': 'multipart/form-data'
     } });
   },
+  changeProfile: (profile) => {
+    return intense.put(`profile`, {...profile})
+  }
 };
 
 export const loginAPI = {
   auth: () => {
     return intense.get(`auth/me`);
   },
-  login: (email, password, rememberMe = false) => {
-    return intense.post(`auth/login`, { email, password, rememberMe });
+  login: (email, password, rememberMe = false, captcha ) => {
+    return intense.post(`auth/login`, { email, password, rememberMe, captcha });
   },
-  Logout: () => {
+  logout: () => {
     return intense.post(`auth/logout`);
   },
+  getCaptcha: () => {
+    return intense.get(`security/get-captcha-url`)
+  }
 };
 
 export const dialogAPI = {

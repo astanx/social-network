@@ -1,0 +1,26 @@
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+
+import profileReducer from "./profileReducer.ts";
+import messagesReducer from "./messagesReducer.ts";
+
+import findUserReducer from "./findUserReducer.ts";
+import loginReducer from "./loginReducer.ts";
+import appReducer from "./appReducer.ts";
+
+const RootReducer = combineReducers({profile: profileReducer,
+  messages: messagesReducer,
+
+  findUser: findUserReducer,
+  login: loginReducer,
+  app: appReducer,})
+
+
+type RootReducerType = typeof RootReducer
+export type AppStateType = ReturnType<RootReducerType>
+
+const store = configureStore({
+  reducer: RootReducer
+});
+
+
+export default store;

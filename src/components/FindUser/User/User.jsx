@@ -28,11 +28,6 @@ const User = (props) => {
         <div className={classes.UserInfo}>
           <div>{props.name}</div>
         </div>
-
-        <div className={classes.UserInfo}>
-          {/* <div>{props.location.country}</div>
-          <div>{props.location.city}</div> */}
-        </div>
       </NavLink>
     </div>
   );

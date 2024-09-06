@@ -3,7 +3,7 @@ import messagesReducer, {
   setDialog,
   setFetching,
   setMessagesList,
-} from "./messagesReducer";
+} from "./messagesReducer.ts";
 
 let getInitialState = () => ({
   MessagesData: [],

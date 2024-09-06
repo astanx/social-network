@@ -4,7 +4,7 @@ import profileReducer, {
   setFetching,
   setStatus,
   setUserProfile,
-} from "./profileReducer";
+} from "./profileReducer.ts";
 
 const getInitialState = () => ({
   PostData: [],

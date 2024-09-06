@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import FindUser from "./FindUser";
+import FindUser from "./FindUser.jsx";
 import React, { useEffect } from "react";
 import classes from "./FindUser.module.css";
 import {
@@ -10,9 +10,11 @@ import {
   getUsers,
   unfollow,
   follow,
-} from "./../../redux/findUserReducer";
-import Preloader from "../UI/Preloader/Preloader";
-import Paginator from "../UI/Paginator/Paginator";
+} from "../../redux/findUserReducer.ts";
+import Preloader from "../UI/Preloader/Preloader.jsx";
+import Paginator from "../UI/Paginator/Paginator.jsx";
+import { AppStateType } from "../../redux/storeRedux.ts";
+
 
 const FindUserCont = (props) => {
   const totalPages = props.pagesCount;
@@ -66,7 +68,7 @@ const FindUserCont = (props) => {
   );
 };
 
-let mapStateToProps = (state) => {
+let mapStateToProps = (state: AppStateType) => {
   return {
     users: state.findUser.users,
     pageSize: state.findUser.pageSize,

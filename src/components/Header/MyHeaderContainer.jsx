@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MyHeader from "./MyHeader";
-import { auth, Logout } from "../../redux/loginReducer";
+import { logout } from "../../redux/loginReducer.ts";
 import { connect } from "react-redux";
 
 
@@ -17,7 +17,7 @@ let mapStateToProps = (state) => {
   };
 };
 
-const MyHeaderContainer = connect(mapStateToProps, { Logout })(
+const MyHeaderContainer = connect(mapStateToProps, { logout })(
   MyHeaderCont
 );
 

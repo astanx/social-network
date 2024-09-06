@@ -6,18 +6,19 @@ import MyButton from "../UI/Button/MyButton";
 import { loginAPI } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
-import { auth } from "../../redux/loginReducer";
+import { auth, getCaptcha, login } from "../../redux/loginReducer.ts";
 
 const Login = (props) => {
   const navigate = useNavigate();
 
   const [error, setError] = useState(undefined);
+  const [captcha, setCaptcha] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({});
-  
+
   useEffect(() => {
     if (props.isLogined) {
       navigate("/profile");
@@ -25,13 +26,20 @@ const Login = (props) => {
   }, [props.isLogined, navigate]);
 
   const submit = (data) => {
-    loginAPI.login(data.email, data.password, false).then((response) => {
 
+    props.login(data).then((response) => {
+      console.log(response);
+      
+      if (response.data.resultCode === 10) {
+        setCaptcha(true)
+        props.getCaptcha()
+        setError("true");
+      }
       if (response.data.resultCode === 1) {
         setError("true");
       }
       if (response.data.resultCode === 0) {
-        navigate('/profile')
+        navigate("/profile");
         props.auth();
       }
     });
@@ -40,7 +48,7 @@ const Login = (props) => {
   useEffect(() => {
     if (errors.email || errors.password) {
       setError("true");
-    } 
+    }
   }, [errors]);
   return (
     <div className={classes.content}>
@@ -58,7 +66,15 @@ const Login = (props) => {
           {...register("password", { required: true })}
           iserror={error}
         />
-
+        <div className={classes.rememberMe}>
+          <input type="checkbox" id="rememberMe" />
+          <label>Remember me</label>
+        </div>
+        {captcha ? <div className={classes.captcha}>
+        <img src={props.captcha}/>
+        <MyInput holder="Captcha" {...register("captcha", { required: true })}/>
+        </div> : null}
+        
         <MyButton name="Submit" />
       </form>
     </div>
@@ -68,7 +84,8 @@ const Login = (props) => {
 let mapStateToProps = (state) => {
   return {
     isLogined: state.login.isLogined,
+    captcha: state.login.captcha
   };
 };
 
-export default connect(mapStateToProps, {auth})(Login);
+export default connect(mapStateToProps, { auth, getCaptcha, login })(Login);
