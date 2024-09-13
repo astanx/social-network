@@ -1,40 +1,39 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import MyHeaderContainer from "./components/Header/MyHeaderContainer";
+import MyHeader from "./components/Header/MyHeader.tsx";
 import MyNav from "./components/Nav/MyNav";
 import { connect } from "react-redux";
 import { inicialization } from "./redux/appReducer.ts";
 import Preloader from "./components/UI/Preloader/Preloader";
 import React, { lazy, Suspense, useEffect } from "react";
-const ProfileContainer = lazy(() =>
-  import("./components/Profile/ProfileContainer")
+const ProfilePage = lazy(() =>
+  import("./components/Profile/ProfilePage.tsx")
 );
-const MessagesContainer = lazy(() =>
-  import("./components/Messages/MessagesContainer")
+const Messages = lazy(() =>
+  import("./components/Messages/Messages.tsx")
 );
-const FindUsersContainer = lazy(() =>
-  import("./components/FindUser/FindUserContainer.tsx")
+const FindUsersPage = lazy(() =>
+  import("./components/FindUser/FindUserPage.tsx")
 );
-const MyProfileContainer = lazy(() =>
-  import("./components/Profile/MyProfileContainer")
-);
-const Login = lazy(() => import("./components/Login/Login"));
+const Login = lazy(() => import("./components/Login/Login.tsx"));
 
 function App(props) {
-  useEffect(() => props.inicialization(), []);
+  useEffect(() => {
+  const handle = () => props.inicialization()
+  handle()}, []);
   return props.isInitialized ? (
     <div className="App">
-      <MyHeaderContainer />
+      <MyHeader />
       <MyNav />
       <Suspense fallback={<Preloader />}>
       <Routes>
           <Route path="/" element={<Navigate to ='/profile' />}/>
           <Route path="*" element={<Navigate to ='/profile' />}/>
-          <Route path="/profile" element={<MyProfileContainer />} />
-          <Route path="/profile/:userId" element={<ProfileContainer />} />
-          <Route path="/messages" element={<MessagesContainer />} />
-          <Route path="/messages/:userId" element={<MessagesContainer />} />
-          <Route path="/findUser" element={<FindUsersContainer />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:userId" element={<Messages />} />
+          <Route path="/findUser" element={<FindUsersPage />} />
           <Route path="/login" element={<Login />} />
         
       </Routes>

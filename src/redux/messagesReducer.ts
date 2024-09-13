@@ -1,16 +1,23 @@
-import { dialogAPI } from "../api/api";
-import { SetFetchingActionType } from "./types/types";
+import { ThunkAction } from "redux-thunk";
+import { dialogAPI } from "../api/api.ts";
+import {
+  DialogData,
+  MessagesListDataType,
+  SendMessageDataType,
+  SetFetchingActionType,
+} from "./types/types";
+import { AppStateType, InferActionsTypes } from "./storeRedux.ts";
 
 export type InitialStateType = typeof initialState;
 
 let initialState = {
-  MessagesData: [],
+  MessagesData: [] as Array<MessagesListDataType>,
   DialogData: {
-    items: [] as Array<SendMessageData>,
+    items: [] as Array<SendMessageDataType>,
   },
   isFetching: false,
 };
-const messagesReducer = (state = initialState, action) => {
+const messagesReducer = (state = initialState, action: MessagesActionsTypes) => {
   switch (action.type) {
     case "SEND_MESSAGE":
       return {
@@ -26,7 +33,6 @@ const messagesReducer = (state = initialState, action) => {
         MessagesData: action.messages,
       };
     case "SET_DIALOG":
-
       return {
         ...state,
         DialogData: action.dialog,
@@ -53,129 +59,96 @@ const messagesReducer = (state = initialState, action) => {
   }
 };
 
-type SendMessageData = {
-  id: string,
-  body: string,
-  translatedBody: null,
-  addedAt: string,
-  senderId: number,
-  senderName: string,
-  recipientId: number,
-  recipientName: string,
-  viewed: boolean,
-  deletedBySender: boolean,
-  deletedByRecipient: boolean,
-  isSpam: boolean,
-  distributionId: null
-}
+export type MessagesActionsTypes = InferActionsTypes<typeof actions>;
+export type ThunkType<ReturnType = void> = ThunkAction<
+ReturnType,
+AppStateType,
+unknown,
+MessagesActionsTypes
+>;
 
-type SendMessageACType = {
-  type: "SEND_MESSAGE";
-  data: SendMessageData;
+export const actions = {
+  sendMessageAC: (data: SendMessageDataType) => {
+    return {
+      type: "SEND_MESSAGE",
+      data,
+    } as any;
+  },
+
+  setFetching: (isFetching: boolean) =>
+    ({
+      type: "SET_FETCHING",
+      isFetching,
+    } as const),
+
+  setMessagesList: (messages: MessagesListDataType) =>
+    ({
+      type: "SET_MESSAGES_LIST",
+      messages,
+    } as const),
+
+  deleteMessageAC: (messageId: number) =>
+    ({
+      type: "DELETE_MESSAGE",
+      messageId,
+    } as const),
+
+  setDialog: (dialog: DialogData) =>
+    ({
+      type: "SET_DIALOG",
+      dialog,
+    } as const),
 };
-
-export const sendMessageAC = (data: SendMessageData): SendMessageACType => {
-  return {
-    type: "SEND_MESSAGE",
-    data,
+export const createDialog =
+  (
+    userId: number
+  ): ThunkType =>
+  async (dispatch) => {
+    await dialogAPI.createDialog(userId);
   };
-};
 
+export const sendMessage =
+  (
+    friendId: number,
+    messageText: string
+  ): ThunkType =>
+  async (dispatch) => {
+    const response = await dialogAPI.sendMessage(friendId, messageText);
 
-export const setFetching = (isFetching: boolean): SetFetchingActionType => ({
-  type: "SET_FETCHING",
-  isFetching,
-});
+    const data = response.data.data;
+    dispatch(actions.sendMessageAC({ ...data.message }));
+  };
 
-type SetMessagesListActionType = {
-  type: "SET_MESSAGES_LIST";
-  messages: SetMessagesListData;
-};
+export const deleteMessage =
+  (
+    userId: number
+  ): ThunkType =>
+  async (dispatch) => {
+    const response = await dialogAPI.deleteMessage(userId);
 
-type SetMessagesListData = {
-  id: number,
-  userName: string,
-  hasNewMessages: boolean,
-  lastDialogActivityDate: string,
-  lastUserActivityDate: string,
-  newMessagesCount: number,
-  photos: {
-      small: null | string,
-      large: null | string
-  }
-}
-export const setMessagesList = (messages: SetMessagesListData): SetMessagesListActionType => ({
-  type: "SET_MESSAGES_LIST",
-  messages,
-});
+    dispatch(actions.deleteMessageAC(userId));
+  };
 
-type DeleteMessageACType = {
-  type: "DELETE_MESSAGE";
-  messageId: number;
-};
-export const deleteMessageAC = (messageId: number): DeleteMessageACType => ({
-  type: "DELETE_MESSAGE",
-  messageId,
-});
+export const getDialog =
+  (
+    userId: number
+  ): ThunkType =>
+  async (dispatch) => {
+    dispatch(actions.setFetching(true));
+    const data = await dialogAPI.getDialog(userId);
 
-type SetDialogActionType = {
-  type: "SET_DIALOG";
-  dialog: SetDialogData;
-};
+    dispatch(actions.setDialog(data));
+    dispatch(actions.setFetching(false));
+  };
+export const getMessages =
+  (): ThunkType =>
+  async (dispatch) => {
+    dispatch(actions.setFetching(true));
+    const data = await dialogAPI.getMessageList();
 
-type SetDialogData = {
-  
-    items: [{
-      id: number,
-      body: string,
-      translatedBody: null,
-      addedAt: string,
-      senderId: number,
-      senderName: string,
-      recipientId: number,
-      viewed: boolean
-  }],
-    totalCount: number,
-    error: null
+    dispatch(actions.setFetching(false));
 
-}
-
-export const setDialog = (dialog: SetDialogData): SetDialogActionType => ({
-  type: "SET_DIALOG",
-  dialog,
-});
-
-export const createDialog = (userId) => (dispatch) => {
-  dialogAPI.createDialog(userId).then((response) => {});
-};
-
-export const sendMessage = (friendId, messageText) => async (dispatch) => {
-  const response = await dialogAPI.sendMessage(friendId, messageText);
-
-  const data = response.data.data;
-  dispatch(sendMessageAC({ ...data.message }));
-};
-
-export const deleteMessage = (userId) => async (dispatch) => {
-  const response = await dialogAPI.deleteMessage(userId);
-
-  dispatch(deleteMessageAC(userId));
-};
-
-export const getDialog = (userId) => async (dispatch) => {
-  dispatch(setFetching(true));
-  const response = await dialogAPI.getDialog(userId);
-
-  dispatch(setDialog(response.data));
-  dispatch(setFetching(false));
-};
-export const getMessages = () => async (dispatch) => {
-  dispatch(setFetching(true));
-  const response = await dialogAPI.getMessageList();
-
-  dispatch(setFetching(false));
-
-  dispatch(setMessagesList(response.data));
-};
+    dispatch(actions.setMessagesList(data));
+  };
 
 export default messagesReducer;

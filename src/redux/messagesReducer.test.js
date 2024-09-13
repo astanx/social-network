@@ -1,8 +1,5 @@
 import messagesReducer, {
-  sendMessageAC,
-  setDialog,
-  setFetching,
-  setMessagesList,
+  actions
 } from "./messagesReducer.ts";
 
 let getInitialState = () => ({
@@ -31,14 +28,14 @@ describe("Messages Reducer Tests", () => {
       isSpam: false,
       distributionId: null,
     };
-    let newState = messagesReducer(initialState, sendMessageAC(message));
+    let newState = messagesReducer(initialState, actions.sendMessageAC(message));
 
     expect(newState.DialogData.items.length).toBe(1);
     expect(newState.DialogData.items[0]).toEqual(message);
   });
   it("should set fetching", () => {
     const initialState = getInitialState();
-    const newState = messagesReducer(initialState, setFetching(true));
+    const newState = messagesReducer(initialState, actions.setFetching(true));
 
     expect(newState.isFetching).toBe(true);
   });
@@ -83,7 +80,7 @@ describe("Messages Reducer Tests", () => {
         },
       },
     ];
-    const newState = messagesReducer(initialState, setMessagesList(messages));
+    const newState = messagesReducer(initialState, actions.setMessagesList(messages));
 
     expect(newState.MessagesData.length).toBe(3);
     expect(newState.MessagesData).toEqual(messages);
@@ -112,7 +109,7 @@ describe("Messages Reducer Tests", () => {
       totalCount: 0,
       error: null,
     };
-    const newState = messagesReducer(initialState, setDialog(dialog));
+    const newState = messagesReducer(initialState, actions.setDialog(dialog));
 
     expect(Object.keys(newState.DialogData).length).toBe(3);
     expect(newState.DialogData.items.length).toBe(1);

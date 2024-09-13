@@ -4,7 +4,22 @@ import { NavLink } from "react-router-dom";
 import viewed from "./../UI/Images/viewed.png";
 import sended from "./../UI/Images/sended.png";
 
-const UserMessage = (props) => {
+type UserMessagePropsType = {
+  logo: string;
+  name: string;
+  time?: string;
+  deleteMessage?: (id: number) => void;
+  messageId?: number | undefined;
+  message?: string;
+  link?: string;
+  id: number;
+  getDialog: (id: number) => void;
+  viewed?: boolean;
+}
+
+const UserMessage: React.FC<UserMessagePropsType>= (props) => {
+  const deleteMessage = props.deleteMessage || function(){}
+  const messageId = props.messageId || 2
   const User = () => (
     <div className={classes.message}>
       <img src={props.logo} className={classes.logoMessage} />
@@ -13,7 +28,7 @@ const UserMessage = (props) => {
           <span>{props.name}</span>
           <span>{props.time}</span>
           {props.deleteMessage ? (
-        <span className={classes.delete} onClick={() => props.deleteMessage(props.messageId)}>X</span>
+        <span className={classes.delete} onClick={() => deleteMessage(messageId)}>X</span>
       ) : null}
         </div>
         <p>{props.message}</p>

@@ -1,9 +1,5 @@
 import profileReducer, {
-  addPost,
-  deletePost,
-  setFetching,
-  setStatus,
-  setUserProfile,
+  actions
 } from "./profileReducer.ts";
 
 const getInitialState = () => ({
@@ -19,47 +15,49 @@ const getInitialState = () => ({
 describe("Profile Reducer Tests", () => {
   it("should delete post", () => {
     const initialState = getInitialState();
-    const stateWithPost = profileReducer(initialState, addPost("Dimas", "Hello"));
+    const stateWithPost = profileReducer(initialState, actions.addPost("Dimas", "Hello"));
   
     expect(stateWithPost.PostData.length).toBe(1);
   
-    const newState = profileReducer(stateWithPost, deletePost(1));
+    const newState = profileReducer(stateWithPost, actions.deletePost(1));
   
     expect(newState.PostData.length).toBe(0);
   });
   it("should handle ADD-POST action", () => {
     const initialState = getInitialState();
-    const newState = profileReducer(initialState, addPost("Dimas", "Hello"));
+    const newState = profileReducer(initialState, actions.addPost("Dimas", "Hello"));
 
     expect(newState.PostData.length).toBe(1);
     expect(newState.PostData[0]).toEqual({
       message: "Hello",
       name: "Dimas",
       id: 1,
+      time: null,
     });
 
     const newState2 = profileReducer(
       newState,
-      addPost("Dimas", "Another Post")
+      actions.addPost("Dimas", "Another Post")
     );
     expect(newState2.PostData.length).toBe(2);
     expect(newState2.PostData[1]).toEqual({
       message: "Another Post",
       name: "Dimas",
       id: 2,
+      time: null,
     });
   });
 
   it("should set fetching", () => {
     const initialState = getInitialState();
-    const newState = profileReducer(initialState, setFetching(true));
+    const newState = profileReducer(initialState, actions.setFetching(true));
 
     expect(newState.isFetching).toBe(true);
   });
 
   it("should set status", () => {
     const initialState = getInitialState();
-    const newState = profileReducer(initialState, setStatus("hello"));
+    const newState = profileReducer(initialState, actions.setStatus("hello"));
 
     expect(newState.status).toEqual("hello");
   });
@@ -84,7 +82,7 @@ describe("Profile Reducer Tests", () => {
       photos: { small: null, large: null },
       userId: 31574,
     };
-    const newState = profileReducer(initialState, setUserProfile(user));
+    const newState = profileReducer(initialState, actions.setUserProfile(user));
 
     expect(newState.userProfile).toEqual(user);
     expect(newState.userProfile.fullName).toEqual("fox2893");
@@ -92,7 +90,7 @@ describe("Profile Reducer Tests", () => {
 
   it("should handle empty user profile", () => {
     const initialState = getInitialState();
-    const newState = profileReducer(initialState, setUserProfile(null));
+    const newState = profileReducer(initialState, actions.setUserProfile(null));
 
     expect(newState.userProfile).toBe(null);
   });

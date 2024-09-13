@@ -1,14 +1,19 @@
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AppStateType } from "../../redux/storeRedux";
 
 const withAuth = (WrappedComponent) => {
+  
   let WithAuthComponent = (props) => {
+    const isLogined = useSelector((s: AppStateType) => s.login.isLogined)
+
     const navigate = useNavigate();
     useEffect(() => {
-      if (!props.isLogined) {
+      if (!isLogined) {
         navigate("/login");
       }
-    }, [props.isLogined, navigate]);
+    }, [isLogined, navigate]);
     return <WrappedComponent {...props} />;
   };
   return WithAuthComponent;

@@ -2,10 +2,17 @@ import React, { useState } from "react";
 import classes from "./MyHeader.module.css";
 import company_logo from "./../UI/Images/company_logo.png";
 import { NavLink } from "react-router-dom";
+import { HeaderPropsType } from "./MyHeaderContainer";
+import { useDispatch, useSelector } from "react-redux";
+import { AppStateType } from "../../redux/storeRedux";
+import { LoginActionsTypes, logout } from "../../redux/loginReducer.ts";
+import { ThunkDispatch } from "redux-thunk";
 
-const MyHeader = (props) => {
+const MyHeader: React.FC<HeaderPropsType> = () => {
   const [showModal, setShowModal] = useState(false);
-
+  const login = useSelector((s: AppStateType) => s.login.login)
+  const isLogined = useSelector((s: AppStateType) => s.login.email)
+  const dispatch: ThunkDispatch<AppStateType, void, LoginActionsTypes> = useDispatch()
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
@@ -14,9 +21,9 @@ const MyHeader = (props) => {
     <div className={classes.header}>
       <img src={company_logo} alt="Company Logo" />
       <div>
-        {props.isLogined ? (
+        {isLogined ? (
           <span className={classes.login} onClick={toggleModal}>
-            {props.login}
+            {login}
           </span>
         ) : (
           <NavLink
@@ -27,11 +34,11 @@ const MyHeader = (props) => {
             Login
           </NavLink>
         )}
-        {showModal && props.isLogined ? (
+        {showModal && isLogined ? (
           <div
             className={classes.modal}
             onClick={() => {
-              props.logout();
+              dispatch(logout());
               toggleModal()
             }}
           >

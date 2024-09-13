@@ -1,7 +1,8 @@
-import { loginAPI } from "../api/api";
+import { loginAPI, ResultCode } from "../api/api.ts";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType, InferActionsTypes } from "./storeRedux.ts";
 
-export type InitialStateType = typeof initialState
-
+export type InitialStateType = typeof initialState;
 
 let initialState = {
   userId: null as number | null,
@@ -11,10 +12,12 @@ let initialState = {
   captcha: null as string | null,
 };
 
-const loginReducer = (state = initialState, action): InitialStateType => {
+const loginReducer = (
+  state = initialState,
+  action: LoginActionsTypes
+): InitialStateType => {
   switch (action.type) {
     case "LOGIN":
-
       return {
         ...state,
         ...action.data,
@@ -29,63 +32,71 @@ const loginReducer = (state = initialState, action): InitialStateType => {
   }
 };
 
-type SetCaptchaActionType = {
-  type: "SET_CAPTCHA";
-  captchaUrl: string;
+export type LoginActionsTypes = InferActionsTypes<typeof actions>;
+export type ThunkType<ReturnType = void> = ThunkAction<
+ReturnType,
+AppStateType,
+unknown,
+LoginActionsTypes
+>;
+export const actions = {
+  setCaptcha: (captchaUrl) =>
+    ({
+      type: "SET_CAPTCHA",
+      captchaUrl,
+    } as const),
+
+  authAC: (
+    userId: number | null,
+    email: string | null,
+    login: string | null,
+    isLogined: boolean
+  ) =>
+    ({
+      type: "LOGIN",
+      data: { userId, email, login, isLogined },
+    } as const),
 };
-
-const setCaptcha = (captchaUrl): SetCaptchaActionType => ({
-  type: "SET_CAPTCHA",
-  captchaUrl,
-});
-
-type authACType = {
-  type: "LOGIN";
-  data: {
-    userId: number | null;
-    email: string | null;
-    login: string | null;
-    isLogined: boolean;
+export const getCaptcha =
+  ():ThunkType =>
+  async (dispatch) => {
+    const response = await loginAPI.getCaptcha();
+    const captcha = response.data.url;
+    dispatch(actions.setCaptcha(captcha));
   };
-};
 
-const authAC = (
-  userId: number | null,
-  email: string | null,
-  login: string | null,
-  isLogined: boolean
-): authACType => ({
-  type: "LOGIN",
-  data: { userId, email, login, isLogined },
-});
+export const auth =
+  (): ThunkType =>
+  (dispatch) => {
+    return loginAPI.auth().then((response) => {
+      if (response.data.resultCode === ResultCode.Success) {
+        const { id, login, email } = response.data.data;
+        dispatch(actions.authAC(id, email, login, true));
+      }
+    });
+  };
 
-export const getCaptcha = () => async (dispatch) => {
-  const response = await loginAPI.getCaptcha();
-  const captcha = response.data.url;
-  dispatch(setCaptcha(captcha));
-};
+export const logout =
+  (): ThunkType =>
+  async (dispatch) => {
+    const response = await loginAPI.logout();
 
-export const auth = () => (dispatch) => {
-  return loginAPI.auth().then((response) => {
-    if (response.data.resultCode === 0) {
-      const { id, login, email } = response.data.data;
-      dispatch(authAC(id, email, login, true));
-    }
-  });
-};
+    dispatch(actions.authAC(null, null, null, false));
+  };
 
-export const logout = () => async (dispatch) => {
-  const response = await loginAPI.logout();
-
-  dispatch(authAC(null, null, null, false));
-};
-
-export const login = (data) => async (dispatch: any) => {
-  return loginAPI.login(
-    data.email,
-    data.password,
-    data.rememberMe,
-    data.captcha
-  );
-};
+export const login =
+  (data: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+    captcha: string | null;
+  }): ThunkType =>
+  (dispatch) => {
+    return loginAPI.login(
+      data.email,
+      data.password,
+      data.rememberMe,
+      data.captcha
+    );
+  };
 export default loginReducer;

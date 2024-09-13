@@ -1,11 +1,16 @@
 import { auth } from "./loginReducer.ts";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType, InferActionsTypes } from "./storeRedux.ts";
 
 export type InitialStateType = typeof initialState;
 let initialState = {
   isInitialized: false,
 };
 
-const appReducer = (state = initialState, action): InitialStateType => {
+const appReducer = (
+  state = initialState,
+  action: ActionsTypes
+): InitialStateType => {
   switch (action.type) {
     case "INITIALIZE":
       return {
@@ -17,14 +22,17 @@ const appReducer = (state = initialState, action): InitialStateType => {
   }
 };
 
-type InitializeActionType = {
-  type: "INITIALIZE";
-};
+type ActionsTypes =  InferActionsTypes<typeof actions>
 
-const initialize = (): InitializeActionType => ({ type: "INITIALIZE" });
 
-export const inicialization = () => (dispatch: any) => {
-  dispatch(auth()).then(() => dispatch(initialize()));
-};
+
+export const actions = { initialize: () => ({ type: "INITIALIZE" }),
+}
+export const inicialization =
+  (): ThunkAction<Promise<void>, AppStateType, void, ActionsTypes> =>
+  async (dispatch) => {
+    await dispatch(auth());
+    dispatch(actions.initialize());
+  };
 
 export default appReducer;

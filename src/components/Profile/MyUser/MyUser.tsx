@@ -1,29 +1,54 @@
-import React, { useEffect, useState } from "react";
-import MyInput from "../../UI/Input/MyInput";
+import React, { useState } from "react";
+import MyInput from "../../UI/Input/MyInput.tsx";
 import logo from "./../../UI/Images/logo.png";
 import classes from "./MyUser.module.css";
 import github from "./../../UI/Images/github.png";
-import MyButton from "../../UI/Button/MyButton";
+import MyButton from "../../UI/Button/MyButton.tsx";
 import { NavLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import messages from './../../UI/Images/messages.png'
+import messages from "./../../UI/Images/messages.png";
+import { UserProfileType } from "../../../redux/types/types.ts";
+import { ThunkDispatch } from "redux-thunk";
+import { AppStateType } from "../../../redux/storeRedux.ts";
+import { ProfileActionsTypes } from "../../../redux/profileReducer.ts";
+import { useDispatch } from "react-redux";
 
-const MyUser = (props) => {
+const MyUser: React.FC<any> = (props) => {
+ 
   const [isEditing, setIsEditing] = useState(false);
-  return isEditing && props.id ? (
+  return isEditing && props.isMyUser ? (
     <ChangeProfile
       {...props}
       isEditing={isEditing}
       setIsEditing={setIsEditing}
+
     />
   ) : (
-    <ProfileData {...props} isEditing={isEditing} setIsEditing={setIsEditing} />
+    <ProfileData {...props}  isEditing={isEditing} setIsEditing={setIsEditing} />
   );
 };
 
-const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
-  const { userId } = useParams();
+type EditingProps = {
+  setIsEditing: (isEditing: boolean) => void;
+  isEditing: boolean;
+};
 
+type ProfileDataProps = {
+  userProfile: UserProfileType | null;
+  createDialog: (id: number) => void;
+  photo: null | string;
+  id: number | null;
+  status: string | null;
+  isMyUser: boolean
+};
+
+const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
+  setIsEditing,
+  isEditing,
+  ...props
+}) => {
+  const { userId } = useParams();
+  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> = useDispatch()
   const normalizeUrl = (url) => {
     if (!/^https?:\/\//i.test(url)) {
       return `https://${url}`;
@@ -38,20 +63,20 @@ const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
           src={
             props.id && props.photo
               ? props.photo
-              : props.userProfile.photos.small
+              : props.userProfile?.photos.small
               ? props.userProfile.photos.small
               : logo
           }
           className={classes.logo}
         />
-        {!props.id ? (
+        {!props.isMyUser ? (
           <NavLink to={`/messages/${userId}`}>
             {" "}
-            <img src={messages}
+            <img
+              src={messages}
               className={classes.start_dialog}
-              name="start dialog"
               onClick={() => {
-                props.createDialog(userId);
+                dispatch(props.createDialog(Number(userId)));
               }}
             />{" "}
           </NavLink>
@@ -59,7 +84,7 @@ const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
           <button onClick={() => setIsEditing(true)}>edit</button>
         )}
         <div className={classes.contactHrefs}>
-          {props.userProfile.contacts.github ? (
+          {props.userProfile?.contacts.github ? (
             <a href={normalizeUrl(props.userProfile.contacts.github)}>
               <img src={github} />
             </a>
@@ -70,10 +95,10 @@ const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
       <div className={classes.Description}>
         <div>
           <span>Name: </span>
-          <span>{props.userProfile.fullName}</span>
+          <span>{props.userProfile?.fullName}</span>
         </div>
 
-        {props.userProfile.aboutMe ? (
+        {props.userProfile?.aboutMe ? (
           <div>
             <span>About: </span>
             <span>{props.userProfile.aboutMe}</span>
@@ -83,9 +108,9 @@ const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
         )}
         <div>
           <span>Job: </span>
-          <span>{props.userProfile.lookingForAJob ? "looking" : "have"}</span>
+          <span>{props.userProfile?.lookingForAJob ? "looking" : "have"}</span>
         </div>
-        {props.userProfile.lookingForAJobDescription ? (
+        {props.userProfile?.lookingForAJobDescription ? (
           <div>
             <span>Job Description: </span>
             <span>{props.userProfile.lookingForAJobDescription}</span>
@@ -100,33 +125,60 @@ const ProfileData = ({ setIsEditing, isEditing, ...props }) => {
   );
 };
 
-const ChangeProfile = ({ setIsEditing, isEditing, ...props }) => {
+type ChangeProfileProps = {
+  userProfile: UserProfileType | null;
+  setPhoto: (file: string) => void;
+  updateStatus: (status: string) => void;
+  changeProfile: (data: any, userId: number) => void;
+  photo: string | null;
+  id: number | null;
+
+  status: string | null;
+};
+type FormValues = {
+  FullName: string;
+  AboutMe: string | null;
+  LookingForAJobDescription: string;
+  Status: string | null;
+  lookingForAJob: boolean;
+  github: string | null;
+  image: string | FileList;
+};
+
+const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
+  setIsEditing,
+  isEditing,
+  ...props
+}) => {
   const { userId } = useParams();
+  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> = useDispatch()
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormValues>({
     defaultValues: {
-      FullName: props.userProfile.fullName,
-      AboutMe: props.userProfile.aboutMe,
-      LookingForAJobDescription: props.userProfile.lookingForAJobDescription,
+      FullName: props.userProfile?.fullName,
+      AboutMe: props.userProfile?.aboutMe,
+      LookingForAJobDescription: props.userProfile?.lookingForAJobDescription,
       Status: props.status,
-      lookingForAJob: props.userProfile.lookingForAJob,
-      github: props.userProfile.contacts.github,
+      lookingForAJob: props.userProfile?.lookingForAJob,
+      github: props.userProfile?.contacts.github,
     },
   });
 
   const submit = (data) => {
     data["contacts"] = { github: data.github };
-    console.log(data);
 
     if (data.image[0]) {
-      props.setPhoto(data.image[0]);
+      dispatch(props.setPhoto(data.image[0]));
     }
-    props.updateStatus(data.Status);
-    props.changeProfile(data, userId ? userId : props.id);
+    dispatch( props.updateStatus(data.Status));
+    dispatch(props.changeProfile(
+      data,
+      Number(userId) ? Number(userId) : Number(props.id)
+    ))
     reset();
     setIsEditing(false);
   };
@@ -138,21 +190,21 @@ const ChangeProfile = ({ setIsEditing, isEditing, ...props }) => {
           src={
             props.id && props.photo
               ? props.photo
-              : props.userProfile.photos.small
-              ? props.userProfile.photos.small
+              : props.userProfile?.photos.small
+              ? props.userProfile?.photos.small
               : logo
           }
           className={classes.logo}
           alt="Profile"
         />
-        <div class={classes.file_input_wrapper}>
+        <div className={classes.file_input_wrapper}>
           <input
             type="file"
             placeholder="image url"
-            class={classes.file_input}
+            className={classes.file_input}
             {...register("image")}
           />
-          <span class={classes.file_label}>Выберите изображение</span>
+          <span className={classes.file_label}>Выберите изображение</span>
         </div>
       </div>
 
@@ -160,6 +212,7 @@ const ChangeProfile = ({ setIsEditing, isEditing, ...props }) => {
         <div>
           <span>Name: </span>
           <MyInput
+            iserror={undefined}
             holder="Name (required)"
             {...register("FullName", { required: true })}
           />
@@ -168,6 +221,7 @@ const ChangeProfile = ({ setIsEditing, isEditing, ...props }) => {
         <div>
           <span>About: </span>
           <MyInput
+            iserror={undefined}
             holder="About (required)"
             {...register("AboutMe", { required: true })}
           />
@@ -179,17 +233,26 @@ const ChangeProfile = ({ setIsEditing, isEditing, ...props }) => {
         <div>
           <span>Job Description: </span>
           <MyInput
+            iserror={undefined}
             {...register("LookingForAJobDescription", { required: true })}
             holder="Job Description (required)"
           />
         </div>
         <div>
           <span>Status: </span>
-          <MyInput {...register("Status")} holder="Status" />
+          <MyInput
+            iserror={undefined}
+            {...register("Status")}
+            holder="Status"
+          />
         </div>
         <div>
           <span>Github Page: </span>
-          <MyInput holder="github page" {...register("github")} />
+          <MyInput
+            iserror={undefined}
+            holder="github page"
+            {...register("github")}
+          />
         </div>
         <MyButton
           style={{ width: "200px", alignSelf: "center" }}

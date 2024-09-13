@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import classes from "./SendMessage.module.css";
-import MyInput from "../../../UI/Input/MyInput";
-import MyButton from "../../../UI/Button/MyButton";
+import MyInput from "../../../UI/Input/MyInput.tsx";
+import MyButton from "../../../UI/Button/MyButton.tsx";
 import { useForm } from "react-hook-form";
 
+type FormValuesType = {
+  messageText: string
+}
 
-const SendMessage = (props) => {
+type SendMessagePropsType = {
+  sendMessage:(friendId: number, messageText: string) =>  void;
+  friendId: number
+  login: string
+}
+
+const SendMessage: React.FC<SendMessagePropsType> = (props) => {
   
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({});
+  } = useForm<FormValuesType>({});
 
   const submit = (data) => {
     if (data.messageText.trim() !== "") {
@@ -23,10 +32,9 @@ const SendMessage = (props) => {
   return (
     <form onSubmit={handleSubmit(submit)} className={classes.SendMessage}>
       <MyInput
-        holder="Message"
+        iserror={undefined} holder="Message"
         {...register('messageText', { required: true })}
-        autoComplete="off"
-      />
+        autoComplete="off"      />
       <MyButton
         name="Send"
       />

@@ -1,23 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import classes from "./Login.module.css";
-import MyInput from "../UI/Input/MyInput";
-import MyButton from "../UI/Button/MyButton";
-import { loginAPI } from "../../api/api";
+import MyInput from "../UI/Input/MyInput.tsx";
+import MyButton from "../UI/Button/MyButton.tsx";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { auth, getCaptcha, login } from "../../redux/loginReducer.ts";
+import { ResultCode } from "../../api/api.ts";
 
-const Login = (props) => {
+type FormValuesType = {
+  email: string;
+  password: string;
+  captcha: string;
+  rememberMe: boolean;
+};
+
+type LoginPropsType = {
+  isLogined: boolean;
+  captcha: string | undefined;
+  login: (data: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+    captcha: string | null;
+  }) => any;
+  getCaptcha: () => void;
+  auth: () => void;
+};
+
+const Login: React.FC<LoginPropsType> = (props) => {
   const navigate = useNavigate();
 
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<undefined | string>(undefined);
   const [captcha, setCaptcha] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm<FormValuesType>({});
 
   useEffect(() => {
     if (props.isLogined) {
@@ -26,19 +46,16 @@ const Login = (props) => {
   }, [props.isLogined, navigate]);
 
   const submit = (data) => {
-
     props.login(data).then((response) => {
-      console.log(response);
-      
-      if (response.data.resultCode === 10) {
-        setCaptcha(true)
-        props.getCaptcha()
+      if (response.data.resultCode === ResultCode.RequiredCaptcha) {
+        setCaptcha(true);
+        props.getCaptcha();
         setError("true");
       }
-      if (response.data.resultCode === 1) {
+      if (response.data.resultCode === ResultCode.Error) {
         setError("true");
       }
-      if (response.data.resultCode === 0) {
+      if (response.data.resultCode === ResultCode.Success) {
         navigate("/profile");
         props.auth();
       }
@@ -70,11 +87,17 @@ const Login = (props) => {
           <input type="checkbox" id="rememberMe" />
           <label>Remember me</label>
         </div>
-        {captcha ? <div className={classes.captcha}>
-        <img src={props.captcha}/>
-        <MyInput holder="Captcha" {...register("captcha", { required: true })}/>
-        </div> : null}
-        
+        {captcha ? (
+          <div className={classes.captcha}>
+            <img src={props.captcha} />
+            <MyInput
+              iserror={undefined}
+              holder="Captcha"
+              {...register("captcha", { required: true })}
+            />
+          </div>
+        ) : null}
+
         <MyButton name="Submit" />
       </form>
     </div>
@@ -84,7 +107,7 @@ const Login = (props) => {
 let mapStateToProps = (state) => {
   return {
     isLogined: state.login.isLogined,
-    captcha: state.login.captcha
+    captcha: state.login.captcha,
   };
 };
 

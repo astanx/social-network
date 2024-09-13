@@ -15,9 +15,14 @@ const RootReducer = combineReducers({profile: profileReducer,
   app: appReducer,})
 
 
+
 type RootReducerType = typeof RootReducer
 export type AppStateType = ReturnType<RootReducerType>
-
+export type InferActionsTypes<T> = T extends { [key: string]: infer U }
+    ? U extends (...args: any[]) => infer A
+        ? A
+        : never
+    : never;
 const store = configureStore({
   reducer: RootReducer
 });
