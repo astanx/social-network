@@ -14,6 +14,7 @@ type PaginatorPropsType = {
 };
 
 const Paginator: React.FC<PaginatorPropsType> = (props) => {
+  
   const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> = useDispatch()
   let pages: Array<number> = [];
   for (let i = props.minPagination; i <= props.maxPagination; i++) {

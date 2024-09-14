@@ -1,9 +1,9 @@
 import React from "react";
 import classes from "./MyButton.module.css";
 
-interface MyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  
-}
+type MyButtonProps =   {
+  name: string
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const MyButton: React.FC<MyButtonProps> = (props) => {
   return (

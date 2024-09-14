@@ -40,6 +40,7 @@ type ProfileDataProps = {
   id: number | null;
   status: string | null;
   isMyUser: boolean
+  login: string | null
 };
 
 const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
@@ -95,7 +96,7 @@ const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
       <div className={classes.Description}>
         <div>
           <span>Name: </span>
-          <span>{props.userProfile?.fullName}</span>
+          <span>{props.login || props.userProfile?.fullName}</span>
         </div>
 
         {props.userProfile?.aboutMe ? (
@@ -132,7 +133,7 @@ type ChangeProfileProps = {
   changeProfile: (data: any, userId: number) => void;
   photo: string | null;
   id: number | null;
-
+  login: string | null
   status: string | null;
 };
 type FormValues = {
@@ -159,7 +160,7 @@ const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      FullName: props.userProfile?.fullName,
+      FullName: props.login || props.userProfile?.fullName,
       AboutMe: props.userProfile?.aboutMe,
       LookingForAJobDescription: props.userProfile?.lookingForAJobDescription,
       Status: props.status,
@@ -204,7 +205,7 @@ const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
             className={classes.file_input}
             {...register("image")}
           />
-          <span className={classes.file_label}>Выберите изображение</span>
+          <span className={classes.file_label}>Choose Image</span>
         </div>
       </div>
 

@@ -46,7 +46,7 @@ export const userAPI = {
   },
   getUsers: async (
     pageSize: number,
-    currentPage: number,
+    currentPage: number | null = 1,
     term: string,
     friend: boolean | null
   ) => {

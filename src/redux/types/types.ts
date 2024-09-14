@@ -13,6 +13,7 @@ export type UserType = {
   followed: boolean;
 };
 export type MessagesListDataType = {
+  map(arg0: (message: any) => import("react").JSX.Element): unknown;
   id: number;
   userName: string;
   hasNewMessages: boolean;
@@ -40,13 +41,14 @@ export type SendMessageDataType = {
   distributionId: null;
 };
 export type UserProfileType = {
-  userid: number;
+  userId: number;
   lookingForAJob: boolean;
   lookingForAJobDescription: string;
   fullName: string;
-  aboutMe: string | null
+  FullName: string;
+  aboutMe: string | null;
   contacts: {
-    github: string | null;
+    github: string | null ;
     vk: string | null;
     facebook: string | null;
     instagram: string | null;
@@ -88,12 +90,12 @@ export type NewPostType = {
 export type ProfileStateProps = {
   PostData: Array<NewPostType>;
   userId: null | number;
-  isFetching: boolean;
+
   userProfile: null | UserProfileType;
   status: null | string;
   photo: null | string;
   isLogined: boolean;
- 
+ isMyUser: boolean
 };
 
 type ProfileDispatchProps = {
@@ -106,7 +108,7 @@ type ProfileDispatchProps = {
   deletePost: (postId: number) => void;
 };
 
-export type ProfilePropsType = ProfileStateProps & ProfileDispatchProps;
+export type ProfilePropsType = any;
 export type ApiResponseType = {
   resultCode: number;
   messages: Array<string>;

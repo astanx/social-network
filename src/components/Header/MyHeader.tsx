@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import classes from "./MyHeader.module.css";
 import company_logo from "./../UI/Images/company_logo.png";
 import { NavLink } from "react-router-dom";
-import { HeaderPropsType } from "./MyHeaderContainer";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "../../redux/storeRedux";
 import { LoginActionsTypes, logout } from "../../redux/loginReducer.ts";
 import { ThunkDispatch } from "redux-thunk";
 
-const MyHeader: React.FC<HeaderPropsType> = () => {
+const MyHeader: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const login = useSelector((s: AppStateType) => s.login.login)
+  const login = useSelector((s: AppStateType) => s.profile.login)
   const isLogined = useSelector((s: AppStateType) => s.login.email)
   const dispatch: ThunkDispatch<AppStateType, void, LoginActionsTypes> = useDispatch()
   const toggleModal = () => {

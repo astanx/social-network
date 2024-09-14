@@ -14,7 +14,7 @@ const FindUsersPage: React.FC = () => {
   const isFetching = useSelector((s: AppStateType) => s.findUser.isFetching);
   const term = useSelector((s: AppStateType) => s.findUser.term);
   const pageSize = useSelector((s: AppStateType) => s.findUser.pageSize);
-  const currentPage = useSelector((s: AppStateType) => s.findUser.currentPage);
+  let currentPage = useSelector((s: AppStateType) => s.findUser.currentPage);
   const minPagination = useSelector(
     (s: AppStateType) => s.findUser.minPagination
   );
@@ -22,31 +22,33 @@ const FindUsersPage: React.FC = () => {
   const maxPagination = useSelector(
     (s: AppStateType) => s.findUser.maxPagination
   );
-  
+
   const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> =
     useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  let paramsTerm
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    params.set("page", String(currentPage));
+    params.set("term", term || '');
+    params.set("friend", friend ? "true" : "false");
+
+    navigate(`${location.pathname}?${params.toString()}`);
+  }, [currentPage, friend, term]);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const paramsObject = Object.fromEntries(params.entries());
-    console.log(paramsObject.currentPage);
-    
-    paramsTerm = paramsObject.term ? paramsObject.term == 'undefined' ? '' : paramsObject.term : ''
-    params.set("term", term || (term === null ? paramsTerm : ""));
-    params.set("friend", friend ? friend.toString() : "");
-    params.set("page", String(currentPage));
+
+    const newTerm = paramsObject.term ?? "";
+    let newPage = currentPage;
+    const newFriend = paramsObject.friend === "true";
+
+    if (!!paramsObject.page) newPage = Number(paramsObject.page);
+
     navigate(`${location.pathname}?${params.toString()}`);
-    dispatch(
-      getUsers(
-        pageSize,
-        currentPage ,
-        term || (term === null ? paramsObject.term : ""),
-        friend
-      )
-    );
-  }, [term, currentPage, pageSize, friend]);
+
+    dispatch(getUsers(pageSize, newPage, newTerm, newFriend));
+  }, [location.search]);
 
   return (
     <div className={classes.content}>

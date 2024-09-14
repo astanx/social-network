@@ -8,16 +8,14 @@ import { AppStateType } from "../../redux/storeRedux.ts";
 import { actions, FindUserActionsTypes } from "../../redux/findUserReducer.ts";
 import { ThunkDispatch } from "redux-thunk";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-const FindUser = () => {
+const FindUser: React.FC = () => {
   const isLogined = useSelector((s: AppStateType) => s.login.isLogined);
-  const followingInProgress = useSelector(
-    (s: AppStateType) => s.findUser.followingInProgress
-  );
-  const term = useSelector((s: AppStateType) => s.findUser.term)
-  const friend = useSelector((s: AppStateType) => s.findUser.friend)
-  const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> =
-    useDispatch();
+  const followingInProgress = useSelector((s: AppStateType) => s.findUser.followingInProgress);
+  const term = useSelector((s: AppStateType) => s.findUser.term);
+  const friend = useSelector((s: AppStateType) => s.findUser.friend);
+  const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> = useDispatch();
   const userData = useSelector((s: AppStateType) => s.findUser.users);
   const users = userData.map((user) => (
     <User
@@ -34,27 +32,28 @@ const FindUser = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm({
     defaultValues: {
       term,
-      friend
-    }
+      friend,
+    },
   });
 
+  const navigate = useNavigate();
+
   const submit = (data) => {
-    dispatch(actions.setFilter(data.term, data.friend, 1));
+    const currentPage = 1; 
+    dispatch(actions.setFilter(data.term, data.friend, currentPage));
+    navigate(`?term=${data.term}&friend=${data.friend}&page=${currentPage}`); 
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit(submit)} className={classes.form}>
         <MyInput
-          {...register("term")}
-          holder={""}
-          iserror={undefined}
-          autoComplete="off"
-        />
+        iserror={undefined} {...register("term")}
+        holder=""
+        autoComplete="off"        />
         <div>
           <span>Only friends: </span>
           <input type="checkbox" {...register("friend")} />

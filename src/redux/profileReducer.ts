@@ -1,9 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { profileAPI } from "../api/api.ts";
-import {
-  NewPostType,
-  UserProfileType,
-} from "./types/types";
+import { NewPostType, UserProfileType } from "./types/types";
 import { AppStateType, InferActionsTypes } from "./storeRedux.ts";
 
 export type InitialStateType = {
@@ -13,6 +10,7 @@ export type InitialStateType = {
   userProfile: UserProfileType | null;
   status: null | string;
   photo: null | string;
+  login: string | null;
 };
 
 let initialState: InitialStateType = {
@@ -22,6 +20,7 @@ let initialState: InitialStateType = {
   userProfile: null,
   status: null,
   photo: null,
+  login: null,
 };
 const profileReducer = (
   state = initialState,
@@ -46,7 +45,6 @@ const profileReducer = (
         isFetching: action.isFetching,
       };
     case "SET_USER_PROFILE":
-
       return {
         ...state,
         userProfile: action.user,
@@ -68,16 +66,21 @@ const profileReducer = (
         ...state,
         photo: action.photo,
       };
+    case "SET_NAME":
+      return {
+        ...state,
+        login: action.name,
+      };
     default:
       return state;
   }
 };
 
 export type ThunkType<ReturnType = void> = ThunkAction<
-ReturnType,
-AppStateType,
-unknown,
-ProfileActionsTypes
+  ReturnType,
+  AppStateType,
+  unknown,
+  ProfileActionsTypes
 >;
 
 export type ProfileActionsTypes = InferActionsTypes<typeof actions>;
@@ -88,7 +91,10 @@ export const actions = {
       type: "SET_PHOTO",
       photo,
     } as any),
-
+  setName: (name: string) => ({
+    type: "SET_NAME",
+    name,
+  }),
   setFetching: (isFetching: boolean) =>
     ({
       type: "SET_FETCHING",
@@ -121,28 +127,21 @@ export const actions = {
     } as const),
 };
 export const changeProfile =
-  (
-    profile: UserProfileType,
-    id: number
-  ): ThunkType =>
+  (profile: UserProfileType, id: number): ThunkType =>
   async (dispatch) => {
+    dispatch(actions.setFetching(true));
     const response = await profileAPI.changeProfile(profile);
-
-    await dispatch(getProfile(id));
+    dispatch(actions.setName(profile.FullName));
+    dispatch(actions.setFetching(false));
   };
 export const setPhoto =
-
-  (
-    photo: string
-  ): ThunkType =>
+  (photo: string): ThunkType =>
   async (dispatch) => {
     const response = await profileAPI.setPhoto(photo);
     dispatch(actions.setPhotoAC(response.data.data.photos.small));
   };
 export const getProfile =
-  (
-    userId: number
-  ): ThunkType =>
+  (userId: number): ThunkType =>
   async (dispatch) => {
     dispatch(actions.setFetching(true));
     if (userId) {
@@ -158,9 +157,7 @@ export const getProfile =
   };
 
 export const updateStatus =
-  (
-    status: string
-  ): ThunkType =>
+  (status: string): ThunkType =>
   async (dispatch) => {
     const response = await profileAPI.updateStatus(status);
     dispatch(actions.setStatus(status));

@@ -3,19 +3,22 @@ import classes from "./SendMessage.module.css";
 import MyInput from "../../../UI/Input/MyInput.tsx";
 import MyButton from "../../../UI/Button/MyButton.tsx";
 import { useForm } from "react-hook-form";
+import { MessagesActionsTypes, sendMessage } from "../../../../redux/messagesReducer.ts";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AppStateType } from "../../../../redux/storeRedux.ts";
 
 type FormValuesType = {
   messageText: string
 }
 
 type SendMessagePropsType = {
-  sendMessage:(friendId: number, messageText: string) =>  void;
   friendId: number
-  login: string
+  login: string | null
 }
 
 const SendMessage: React.FC<SendMessagePropsType> = (props) => {
-  
+  const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> = useDispatch()
   const {
     register,
     handleSubmit,
@@ -25,7 +28,7 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
 
   const submit = (data) => {
     if (data.messageText.trim() !== "") {
-      props.sendMessage(props.friendId, data.messageText);      
+      dispatch(sendMessage(props.friendId, data.messageText));      
       reset()
     }
   };

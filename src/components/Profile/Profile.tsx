@@ -22,10 +22,11 @@ const Profile: React.FC<ProfilePropsType> = (props) => {
   const status = useSelector((s: AppStateType) => s.profile.status)
   const postData = useSelector((s: AppStateType) => s.profile.PostData)
   const photo = useSelector((s: AppStateType) => s.profile.photo)
-  
+  const login = useSelector((s: AppStateType) => s.profile.login)
   return (
     <div className={classes.content}>
       <MyUser
+      login={login}
         isMyUser={props.isMyUser}
         setPhoto={setPhoto}
         createDialog={createDialog}

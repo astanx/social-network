@@ -3,8 +3,13 @@ import classes from "./UserMessage.module.css";
 import { NavLink } from "react-router-dom";
 import viewed from "./../UI/Images/viewed.png";
 import sended from "./../UI/Images/sended.png";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AppStateType } from "../../redux/storeRedux";
+import { deleteMessage, getDialog, MessagesActionsTypes } from "../../redux/messagesReducer.ts";
 
 type UserMessagePropsType = {
+  isDeletable: any;
   logo: string;
   name: string;
   time?: string;
@@ -13,13 +18,13 @@ type UserMessagePropsType = {
   message?: string;
   link?: string;
   id: number;
-  getDialog: (id: number) => void;
   viewed?: boolean;
 }
 
 const UserMessage: React.FC<UserMessagePropsType>= (props) => {
-  const deleteMessage = props.deleteMessage || function(){}
+
   const messageId = props.messageId || 2
+  const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> = useDispatch()
   const User = () => (
     <div className={classes.message}>
       <img src={props.logo} className={classes.logoMessage} />
@@ -27,8 +32,8 @@ const UserMessage: React.FC<UserMessagePropsType>= (props) => {
         <div>
           <span>{props.name}</span>
           <span>{props.time}</span>
-          {props.deleteMessage ? (
-        <span className={classes.delete} onClick={() => deleteMessage(messageId)}>X</span>
+          {props.isDeletable ? (
+        <span className={classes.delete} onClick={() => dispatch(deleteMessage(messageId))}>X</span>
       ) : null}
         </div>
         <p>{props.message}</p>
@@ -40,7 +45,7 @@ const UserMessage: React.FC<UserMessagePropsType>= (props) => {
     <NavLink
       to={`/messages/${props.id}`}
       onClick={() => {
-        props.getDialog(props.id);
+        dispatch(getDialog(props.id));
       }}
     >
       <User />

@@ -121,12 +121,13 @@ export const sendMessage =
 
 export const deleteMessage =
   (
-    userId: number
+    messageId: number
   ): ThunkType =>
   async (dispatch) => {
-    const response = await dialogAPI.deleteMessage(userId);
 
-    dispatch(actions.deleteMessageAC(userId));
+    const response = await dialogAPI.deleteMessage(messageId);
+
+    dispatch(actions.deleteMessageAC(messageId));
   };
 
 export const getDialog =

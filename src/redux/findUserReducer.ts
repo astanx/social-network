@@ -71,7 +71,8 @@ const findUserReducer = (
         pagesCount: action.count,
       };
     case "CHANGE_PAGE":
-
+      console.log(action.page);
+      
       return {
         ...state,
         currentPage: action.page,
@@ -181,7 +182,7 @@ export const actions = {
 export const getUsers =
   (
     pageSize: number,
-    currentPage: number,
+    currentPage: number | null = 1,
     term: string,
     friend: boolean | null
   ): ThunkType =>
