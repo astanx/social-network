@@ -6,6 +6,12 @@ import { connect } from "react-redux";
 import { inicialization } from "./redux/appReducer.ts";
 import Preloader from "./components/UI/Preloader/Preloader";
 import React, { lazy, Suspense, useEffect } from "react";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+const ChatPage = lazy(() => import("./components/ChatPage/ChatPage.tsx"))
 const ProfilePage = lazy(() =>
   import("./components/Profile/ProfilePage.tsx")
 );
@@ -24,12 +30,13 @@ function App(props) {
   return props.isInitialized ? (
     <div className="App">
       <MyHeader />
-      <MyNav />
+      {/* <MyNav /> */}
       <Suspense fallback={<Preloader />}>
       <Routes>
           <Route path="/" element={<Navigate to ='/profile' />}/>
           <Route path="*" element={<Navigate to ='/profile' />}/>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:userId" element={<Messages />} />

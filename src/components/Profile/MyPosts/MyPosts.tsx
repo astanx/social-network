@@ -36,7 +36,7 @@ const MyPosts: React.FC<MyPostsPropsType> = (props) => {
   ));
   return (
     <div className={classes.MyPosts}>
-      <h4>My posts</h4>
+      <h4>My posts(local)</h4>
       { props.isMyUser  ? <CreatePost
         name={props.userName}
         addPost={props.addPost}

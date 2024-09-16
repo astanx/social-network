@@ -1,39 +1,56 @@
 import React from "react";
-import MyButton from "../../UI/Button/MyButton.tsx";
 import { NavLink } from "react-router-dom";
-import classes from "./User.module.css";
-import logo from "./../../UI/Images/logo.png";
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import { useDispatch } from "react-redux";
 import { FindUserActionsTypes, follow, unfollow } from "../../../redux/findUserReducer.ts";
 import { ThunkDispatch } from "redux-thunk";
 import { AppStateType } from "../../../redux/storeRedux.ts";
+import logo from "./../../UI/Images/logo.png";
 
 const User = (props) => {
-  const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> = useDispatch()
+  const dispatch: ThunkDispatch<AppStateType, void, FindUserActionsTypes> = useDispatch();
+
   return (
-    <div className={classes.User}>
-      <div className={classes.UserInfo}>
-        <img src={props.logo ? props.logo : logo} className={classes.logo} />
+    <Card variant="outlined" sx={{ marginBottom: 2 }}>
+      <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar
+          src={props.logo ? props.logo : logo}
+          alt={props.name}
+          sx={{ width: 56, height: 56, marginRight: 2 }}
+        />
+        <Typography variant="body1" sx={{ flexGrow: 1 }}>
+          {props.name}
+        </Typography>
         {props.followed && props.isLogined ? (
-          <MyButton
+          <Button
+            variant='contained'
             disabled={props.followingInProgress.some((id) => id === props.id)}
             onClick={() => dispatch(unfollow(props.id))}
-            name="UnFollow"
-          />
+          >
+            Unfollow
+          </Button>
         ) : props.isLogined ? (
-          <MyButton
+          <Button
+            variant='contained'
             disabled={props.followingInProgress.some((id) => id === props.id)}
             onClick={() => dispatch(follow(props.id))}
-            name="Follow"
-          />
+          >
+            Follow
+          </Button>
         ) : null}
-      </div>
-      <NavLink to={`/profile/${props.id}`} className={classes.link}>
-        <div className={classes.UserInfo}>
-          <div>{props.name}</div>
-        </div>
+      </CardContent>
+      <NavLink to={`/profile/${props.id}`} style={{ textDecoration: 'none' }}>
+        <CardContent>
+          <Typography variant="body2" color="textSecondary">
+            View Profile
+          </Typography>
+        </CardContent>
       </NavLink>
-    </div>
+    </Card>
   );
 };
 

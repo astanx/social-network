@@ -5,7 +5,7 @@
 
 .content {
     grid-area: content;
-    background-color: teal;
+    background-color: whitesmoke;
     display: flex;
     justify-content: center;
     align-items: center;

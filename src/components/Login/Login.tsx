@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import classes from "./Login.module.css";
-import MyInput from "../UI/Input/MyInput.tsx";
-import MyButton from "../UI/Button/MyButton.tsx";
+
+import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { auth, getCaptcha, login } from "../../redux/loginReducer.ts";
 import { ResultCode } from "../../api/api.ts";
+import {
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+} from "@mui/material";
 
 type FormValuesType = {
   email: string;
@@ -28,87 +34,100 @@ type LoginPropsType = {
   auth: () => void;
 };
 
-const Login: React.FC<LoginPropsType> = (props) => {
+const Login: React.FC<LoginPropsType> = ({ isLogined, captcha, login, getCaptcha, auth }) => {
   const navigate = useNavigate();
-
-  const [error, setError] = useState<undefined | string>(undefined);
-  const [captcha, setCaptcha] = useState(false);
+  const [captchaVisible, setCaptchaVisible] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValuesType>({});
+  } = useForm<FormValuesType>();
 
   useEffect(() => {
-    if (props.isLogined) {
+    if (isLogined) {
       navigate("/profile");
     }
-  }, [props.isLogined, navigate]);
+  }, [isLogined, navigate]);
 
-  const submit = (data) => {
-    props.login(data).then((response) => {
-      if (response.data.resultCode === ResultCode.RequiredCaptcha) {
-        setCaptcha(true);
-        props.getCaptcha();
-        setError("true");
-      }
-      if (response.data.resultCode === ResultCode.Error) {
-        setError("true");
-      }
-      if (response.data.resultCode === ResultCode.Success) {
+  const submit = async (data: FormValuesType) => {
+    setServerError(null);
+
+    try {
+      const response = await login(data);
+      if (response?.data?.resultCode === ResultCode.RequiredCaptcha) {
+
+        setCaptchaVisible(true);
+        getCaptcha();
+      } else if (response?.data?.resultCode === ResultCode.Success) {
+
+        auth();
         navigate("/profile");
-        props.auth();
+      } else {
+
+        setServerError("Wrong data. Try again.");
       }
-    });
+    } catch (error) {
+      setServerError("An error occurred");
+    }
   };
 
-  useEffect(() => {
-    if (errors.email || errors.password) {
-      setError("true");
-    }
-  }, [errors]);
   return (
     <div className={classes.content}>
       <h3>Login</h3>
       <form className={classes.form} onSubmit={handleSubmit(submit)}>
-        <MyInput
+        <TextField
+          error={!!errors.email}
+          label="Email"
+          variant="outlined"
           type="email"
-          holder="Email"
           {...register("email", { required: true })}
-          iserror={error}
         />
-        <MyInput
+        {errors.email && <p className={classes.error}>This field is required</p>}
+
+        <TextField
+          error={!!errors.password}
+          label="Password"
+          variant="outlined"
           type="password"
-          holder="Password"
           {...register("password", { required: true })}
-          iserror={error}
         />
-        <div className={classes.rememberMe}>
-          <input type="checkbox" id="rememberMe" />
-          <label>Remember me</label>
-        </div>
-        {captcha ? (
+        {errors.password && <p className={classes.error}>This field is required</p>}
+
+        <FormGroup>
+          <FormControlLabel
+            label="Remember me"
+            control={<Checkbox {...register("rememberMe")} />}
+          />
+        </FormGroup>
+
+        {captchaVisible && (
           <div className={classes.captcha}>
-            <img src={props.captcha} />
-            <MyInput
-              iserror={undefined}
-              holder="Captcha"
+            <img src={captcha} alt="Captcha" />
+            <TextField
+              error={!!errors.captcha}
+              label="Captcha"
+              variant="outlined"
               {...register("captcha", { required: true })}
             />
+            {errors.captcha && <p className={classes.error}>This field is required</p>}
           </div>
-        ) : null}
+        )}
 
-        <MyButton name="Submit" />
+        {serverError && <p className={classes.error}>{serverError}</p>}
+
+        <Button variant="contained" type="submit">
+          Submit
+        </Button>
       </form>
     </div>
   );
 };
 
-let mapStateToProps = (state) => {
-  return {
-    isLogined: state.login.isLogined,
-    captcha: state.login.captcha,
-  };
-};
+const mapStateToProps = (state) => ({
+  isLogined: state.login.isLogined,
+  captcha: state.login.captcha,
+});
 
 export default connect(mapStateToProps, { auth, getCaptcha, login })(Login);

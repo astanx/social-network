@@ -1,9 +1,10 @@
 .Description {
     display: flex;
     flex-direction: column;
-    color: white;
+    color: #1976d2;
     gap: 5px;
     margin: 0 30px;
+    width: 100%;
     
 }
 .start_dialog{

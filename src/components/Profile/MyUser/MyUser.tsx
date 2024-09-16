@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import MyInput from "../../UI/Input/MyInput.tsx";
+
 import logo from "./../../UI/Images/logo.png";
 import classes from "./MyUser.module.css";
 import github from "./../../UI/Images/github.png";
-import MyButton from "../../UI/Button/MyButton.tsx";
+
+import Button from "@mui/material/Button";
 import { NavLink, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import messages from "./../../UI/Images/messages.png";
@@ -12,19 +13,27 @@ import { ThunkDispatch } from "redux-thunk";
 import { AppStateType } from "../../../redux/storeRedux.ts";
 import { ProfileActionsTypes } from "../../../redux/profileReducer.ts";
 import { useDispatch } from "react-redux";
+import {
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  TextField,
+  Avatar,
+  Box,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 const MyUser: React.FC<any> = (props) => {
- 
   const [isEditing, setIsEditing] = useState(false);
   return isEditing && props.isMyUser ? (
     <ChangeProfile
       {...props}
       isEditing={isEditing}
       setIsEditing={setIsEditing}
-
     />
   ) : (
-    <ProfileData {...props}  isEditing={isEditing} setIsEditing={setIsEditing} />
+    <ProfileData {...props} isEditing={isEditing} setIsEditing={setIsEditing} />
   );
 };
 
@@ -39,8 +48,8 @@ type ProfileDataProps = {
   photo: null | string;
   id: number | null;
   status: string | null;
-  isMyUser: boolean
-  login: string | null
+  isMyUser: boolean;
+  login: string | null;
 };
 
 const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
@@ -49,7 +58,8 @@ const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
   ...props
 }) => {
   const { userId } = useParams();
-  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> = useDispatch()
+  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> =
+    useDispatch();
   const normalizeUrl = (url) => {
     if (!/^https?:\/\//i.test(url)) {
       return `https://${url}`;
@@ -58,9 +68,9 @@ const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
   };
 
   return (
-    <div className={classes.Info}>
-      <div className={classes.contact}>
-        <img
+    <Box className={classes.Info} sx={{ padding: 2 }}>
+      <Box className={classes.contact} sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar
           src={
             props.id && props.photo
               ? props.photo
@@ -68,61 +78,58 @@ const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
               ? props.userProfile.photos.small
               : logo
           }
-          className={classes.logo}
+          sx={{ width: 150, height: 150 }}
         />
+
         {!props.isMyUser ? (
-          <NavLink to={`/messages/${userId}`}>
-            {" "}
-            <img
-              src={messages}
-              className={classes.start_dialog}
-              onClick={() => {
-                dispatch(props.createDialog(Number(userId)));
-              }}
-            />{" "}
+          <NavLink to={`/messages/${userId}`} style={{ marginLeft: '16px' }}>
+            <IconButton 
+              onClick={() => dispatch(props.createDialog(Number(userId)))}
+              sx={{ padding: 0 }} 
+              aria-label="start dialog"
+            >
+              <img style={{width: '80px'}} src={messages} alt="Start Dialog" />
+            </IconButton>
           </NavLink>
         ) : (
-          <button onClick={() => setIsEditing(true)}>edit</button>
+          <Button variant="contained" onClick={() => setIsEditing(true)}>
+            Edit
+          </Button>
         )}
-        <div className={classes.contactHrefs}>
+
+        <Box className={classes.contactHrefs} sx={{ marginLeft: '16px' }}>
           {props.userProfile?.contacts.github ? (
-            <a href={normalizeUrl(props.userProfile.contacts.github)}>
-              <img src={github} />
+            <a href={normalizeUrl(props.userProfile.contacts.github)} target="_blank" rel="noopener noreferrer">
+              <img src={github} alt="GitHub" />
             </a>
           ) : null}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div className={classes.Description}>
-        <div>
-          <span>Name: </span>
-          <span>{props.login || props.userProfile?.fullName}</span>
-        </div>
+      <Box className={classes.Description} sx={{ marginTop: 2 }}>
+        <Typography variant="body1">
+          <strong>Name:</strong> {props.login || props.userProfile?.fullName}
+        </Typography>
 
-        {props.userProfile?.aboutMe ? (
-          <div>
-            <span>About: </span>
-            <span>{props.userProfile.aboutMe}</span>
-          </div>
-        ) : (
-          ""
-        )}
-        <div>
-          <span>Job: </span>
-          <span>{props.userProfile?.lookingForAJob ? "looking" : "have"}</span>
-        </div>
-        {props.userProfile?.lookingForAJobDescription ? (
-          <div>
-            <span>Job Description: </span>
-            <span>{props.userProfile.lookingForAJobDescription}</span>
-          </div>
-        ) : (
-          ""
+        {props.userProfile?.aboutMe && (
+          <Typography variant="body1">
+            <strong>About:</strong> {props.userProfile.aboutMe}
+          </Typography>
         )}
 
-        <span>{props.status}</span>
-      </div>
-    </div>
+        <Typography variant="body1">
+          <strong>Job:</strong> {props.userProfile?.lookingForAJob ? "Looking" : "Have"}
+        </Typography>
+
+        {props.userProfile?.lookingForAJobDescription && (
+          <Typography variant="body1">
+            <strong>Job Description:</strong> {props.userProfile.lookingForAJobDescription}
+          </Typography>
+        )}
+
+        <Typography variant="body1">{props.status}</Typography>
+      </Box>
+    </Box>
   );
 };
 
@@ -133,7 +140,7 @@ type ChangeProfileProps = {
   changeProfile: (data: any, userId: number) => void;
   photo: string | null;
   id: number | null;
-  login: string | null
+  login: string | null;
   status: string | null;
 };
 type FormValues = {
@@ -152,7 +159,8 @@ const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
   ...props
 }) => {
   const { userId } = useParams();
-  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> = useDispatch()
+  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> =
+    useDispatch();
   const {
     register,
     handleSubmit,
@@ -175,11 +183,13 @@ const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
     if (data.image[0]) {
       dispatch(props.setPhoto(data.image[0]));
     }
-    dispatch( props.updateStatus(data.Status));
-    dispatch(props.changeProfile(
-      data,
-      Number(userId) ? Number(userId) : Number(props.id)
-    ))
+    dispatch(props.updateStatus(data.Status));
+    dispatch(
+      props.changeProfile(
+        data,
+        Number(userId) ? Number(userId) : Number(props.id)
+      )
+    );
     reset();
     setIsEditing(false);
   };
@@ -187,79 +197,87 @@ const ChangeProfile: React.FC<ChangeProfileProps & EditingProps> = ({
   return (
     <form onSubmit={handleSubmit(submit)} className={classes.Info}>
       <div className={classes.img_input_wrapper}>
-        <img
+        <Avatar
           src={
             props.id && props.photo
               ? props.photo
               : props.userProfile?.photos.small
-              ? props.userProfile?.photos.small
+              ? props.userProfile.photos.small
               : logo
           }
-          className={classes.logo}
-          alt="Profile"
+          sx={{ width: 150, height: 150 }}
         />
-        <div className={classes.file_input_wrapper}>
+
+        <Box sx={{ margin: "20px" }}>
           <input
+            accept="image/*"
+            id="file-input"
             type="file"
-            placeholder="image url"
-            className={classes.file_input}
+            style={{ display: "none" }}
             {...register("image")}
           />
-          <span className={classes.file_label}>Choose Image</span>
-        </div>
+          <label htmlFor="file-input">
+            <Button
+              variant="contained"
+              component="span"
+              sx={{ marginRight: "10px" }}
+            >
+              Upload File
+            </Button>
+          </label>
+        </Box>
       </div>
 
       <div className={classes.Description}>
-        <div>
-          <span>Name: </span>
-          <MyInput
-            iserror={undefined}
-            holder="Name (required)"
-            {...register("FullName", { required: true })}
-          />
-        </div>
+        <TextField
+          error={!!errors.FullName}
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          {...register("FullName", { required: true })}
+        />
 
-        <div>
-          <span>About: </span>
-          <MyInput
-            iserror={undefined}
-            holder="About (required)"
-            {...register("AboutMe", { required: true })}
+        <TextField
+          error={!!errors.AboutMe}
+          id="outlined-basic"
+          label="About"
+          variant="outlined"
+          {...register("AboutMe", { required: true })}
+        />
+        <TextField
+          error={!!errors.LookingForAJobDescription}
+          id="outlined-basic"
+          label="Job Description"
+          variant="outlined"
+          {...register("LookingForAJobDescription", { required: true })}
+        />
+        <TextField
+          id="outlined-basic"
+          label="Status"
+          variant="outlined"
+          {...register("Status", { required: true })}
+        />
+        <TextField
+          id="outlined-basic"
+          label="GitHub Page"
+          variant="outlined"
+          {...register("github", { required: true })}
+        />
+        <FormGroup>
+          <FormControlLabel
+            label="Looking for a job: "
+            control={<Checkbox />}
+            {...register("lookingForAJob")}
           />
-        </div>
-        <div>
-          <span>Looking for a Job: </span>
-          <input type="checkbox" {...register("lookingForAJob")} />
-        </div>
-        <div>
-          <span>Job Description: </span>
-          <MyInput
-            iserror={undefined}
-            {...register("LookingForAJobDescription", { required: true })}
-            holder="Job Description (required)"
-          />
-        </div>
-        <div>
-          <span>Status: </span>
-          <MyInput
-            iserror={undefined}
-            {...register("Status")}
-            holder="Status"
-          />
-        </div>
-        <div>
-          <span>Github Page: </span>
-          <MyInput
-            iserror={undefined}
-            holder="github page"
-            {...register("github")}
-          />
-        </div>
-        <MyButton
+        </FormGroup>
+
+        <Button
           style={{ width: "200px", alignSelf: "center" }}
           type="submit"
-          name="Save"
-        />
+          variant="contained"
+        >
+          Save
+        </Button>
       </div>
     </form>
   );

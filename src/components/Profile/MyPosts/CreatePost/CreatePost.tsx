@@ -1,17 +1,19 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import classes from "./CreatePost.module.css";
-import MyButton from "../../../UI/Button/MyButton.tsx";
-import MyInput from "../../../UI/Input/MyInput.tsx";
+
+import Button from "@mui/material/Button";
+
 import { useForm } from "react-hook-form";
-import { ThunkDispatch } from 'redux-thunk';
+import { ThunkDispatch } from "redux-thunk";
 import { AppStateType } from "../../../../redux/storeRedux.ts";
 import { ProfileActionsTypes } from "../../../../redux/profileReducer.ts";
 import { useDispatch } from "react-redux";
-
+import { Stack, TextField } from "@mui/material";
 
 const CreatePost = (props) => {
-  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> = useDispatch()
-  
+  const dispatch: ThunkDispatch<AppStateType, void, ProfileActionsTypes> =
+    useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -28,8 +30,19 @@ const CreatePost = (props) => {
 
   return (
     <form onSubmit={handleSubmit(submit)}>
-      <MyInput iserror={undefined} holder="Post" {...register("postText", { required: true })} autoComplete="off" />
-      <MyButton name="Create Post" />
+      <Stack justifyContent="center">
+        <TextField
+          error={!!errors.postText}
+          id="outlined-basic"
+          label="Post"
+          variant="filled"
+          autoComplete="off"
+          {...register("postText", { required: true })}
+        />
+      </Stack>
+      <Button variant="contained" type="submit">
+        Create Post
+      </Button>
     </form>
   );
 };

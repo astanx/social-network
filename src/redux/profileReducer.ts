@@ -130,7 +130,9 @@ export const changeProfile =
   (profile: UserProfileType, id: number): ThunkType =>
   async (dispatch) => {
     dispatch(actions.setFetching(true));
+
     const response = await profileAPI.changeProfile(profile);
+
     dispatch(actions.setName(profile.FullName));
     dispatch(actions.setFetching(false));
   };

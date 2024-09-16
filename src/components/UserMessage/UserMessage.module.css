@@ -1,7 +1,7 @@
 .user {
     display: flex;
     gap: 10px;
-    color: white;
+    color: #1976d2;
     flex-direction: column;
 }
 
@@ -21,7 +21,7 @@
     display: flex;
     text-decoration: none;
     gap: 10px;
-    color: whitesmoke;
+    color: #1976d2;
     margin: 20px;
     text-align: left;
     justify-content: flex-start;

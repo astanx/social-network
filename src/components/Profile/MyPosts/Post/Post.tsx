@@ -18,9 +18,7 @@ const Post = (props) => {
         name={props.name}
         logo={props.logo ? props.logo : logo}
         time={getTime()}
-        id={props.id} getDialog={function (id: number): void {
-          throw new Error("Function not implemented.");
-        } }    />
+        id={props.id} isDeletable={false}   />
       {props.isMyUser ? <span className={classes.deletePost} onClick={() => {dispatch(props.deletePost(props.id))}}>X</span>: null } 
     </div>
   );

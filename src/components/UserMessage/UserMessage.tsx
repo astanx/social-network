@@ -1,15 +1,20 @@
 import React from "react";
-import classes from "./UserMessage.module.css";
 import { NavLink } from "react-router-dom";
+import { Avatar, Card, CardContent, Typography, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import viewed from "./../UI/Images/viewed.png";
 import sended from "./../UI/Images/sended.png";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { AppStateType } from "../../redux/storeRedux";
-import { deleteMessage, getDialog, MessagesActionsTypes } from "../../redux/messagesReducer.ts";
+import {
+  deleteMessage,
+  getDialog,
+  MessagesActionsTypes,
+} from "../../redux/messagesReducer.ts";
 
 type UserMessagePropsType = {
-  isDeletable: any;
+  isDeletable: boolean;
   logo: string;
   name: string;
   time?: string;
@@ -19,48 +24,52 @@ type UserMessagePropsType = {
   link?: string;
   id: number;
   viewed?: boolean;
-}
+};
 
-const UserMessage: React.FC<UserMessagePropsType>= (props) => {
+const UserMessage: React.FC<UserMessagePropsType> = (props) => {
+  const messageId = props.messageId || 2;
+  const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> = 
+    useDispatch();
 
-  const messageId = props.messageId || 2
-  const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> = useDispatch()
   const User = () => (
-    <div className={classes.message}>
-      <img src={props.logo} className={classes.logoMessage} />
-      <div className={classes.user}>
-        <div>
-          <span>{props.name}</span>
-          <span>{props.time}</span>
-          {props.isDeletable ? (
-        <span className={classes.delete} onClick={() => dispatch(deleteMessage(messageId))}>X</span>
-      ) : null}
+    <Card variant="outlined" style={{ display: "flex", marginBottom: "10px" }}>
+      <Avatar src={props.logo} sx={{ width: 70, height: 70 }} />
+      <CardContent style={{ flex: "1" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            <Typography variant="subtitle1">{props.name}</Typography>
+            <Typography variant="body2" color="textSecondary">{props.time}</Typography>
+          </div>
+          {props.isDeletable && (
+            <IconButton
+              size="small"
+              onClick={() => dispatch(deleteMessage(messageId))}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          )}
         </div>
-        <p>{props.message}</p>
-      </div>
-      
-    </div>
+        <div style={{ display: "flex", alignItems: "center", marginTop: "5px" }}>
+          <Typography variant="body1" style={{ flex: "1" }}>{props.message}</Typography>
+          {props.messageId && (
+            <img 
+              style={{ width: "20px", marginLeft: "10px" }} 
+              src={props.viewed ? viewed : sended} 
+              alt={props.viewed ? "viewed" : "sended"} 
+            />
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
+
   return props.link ? (
-    <NavLink
-      to={`/messages/${props.id}`}
-      onClick={() => {
-        dispatch(getDialog(props.id));
-      }}
-    >
+    <NavLink to={`/messages/${props.id}`} onClick={() => dispatch(getDialog(props.id))}>
       <User />
     </NavLink>
   ) : (
-    <div className={classes.messageCont}>
+    <div>
       <User />
-      {props.messageId ? 
-      <p className={classes.viewed}>
-        {props.viewed ? (
-          <img className={classes.viewedStatus} src={viewed} alt="viewed" />
-        ) :(
-          <img className={classes.viewedStatus} src={sended} alt="sended" />
-        )}
-      </p>: null}
     </div>
   );
 };

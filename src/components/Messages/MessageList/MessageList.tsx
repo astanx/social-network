@@ -13,15 +13,15 @@ const MessageList: React.FC<MessageListPropsType> = (props) => {
   const messagesArray = Array.isArray(props.MessagesData) ? 
       props.MessagesData : 
       [props.MessagesData];
-  const Messsages = messagesArray.map((message) => (
+  const Messages = messagesArray.map((message) => (
     <UserMessage
       link={"true"}
       name={message.userName}
       logo={message.photos.small ? message.photos.small : logo}
       id={message.id}
-      key={message.id} />
+      key={message.id} isDeletable={false} />
   ));
-  return <div className={classes.MessageList}>{Messsages}</div>;
+  return <div className={classes.MessageList}>{Messages}</div>;
 };
 
 export default MessageList;

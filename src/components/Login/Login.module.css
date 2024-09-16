@@ -1,29 +1,31 @@
 .content {
   grid-area: content;
-  background-color: teal;
+  background-color: whitesmoke;
 }
 
 .content h3 {
   color: whitesmoke;
   text-align: center;
   margin-top: 10px;
+  
 }
 
-.rememberMe{
+.rememberMe {
   display: flex;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 20px;
   align-self: center;
 }
+
 .form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 30px auto;
+  gap: 10px;
 }
-
 
 .rememberMe input {
   margin-right: 10px;
@@ -38,7 +40,9 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
 }
+
 .captcha img {
   width: 200px;
 

@@ -2,12 +2,17 @@ import { useDispatch, useSelector } from "react-redux";
 import FindUser from "./FindUser.tsx";
 import React, { useEffect } from "react";
 import classes from "./FindUser.module.css";
-import { getUsers, FindUserActionsTypes } from "../../redux/findUserReducer.ts";
+import {
+  getUsers,
+  FindUserActionsTypes,
+  actions,
+} from "../../redux/findUserReducer.ts";
 import Preloader from "../UI/Preloader/Preloader.jsx";
 import Paginator from "../UI/Paginator/Paginator.tsx";
 import { AppStateType } from "../../redux/storeRedux.ts";
 import { ThunkDispatch } from "redux-thunk";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Pagination, Stack } from "@mui/material";
 
 const FindUsersPage: React.FC = () => {
   const pagesCount = useSelector((s: AppStateType) => s.findUser.pagesCount);
@@ -30,7 +35,7 @@ const FindUsersPage: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     params.set("page", String(currentPage));
-    params.set("term", term || '');
+    params.set("term", term || "");
     params.set("friend", friend ? "true" : "false");
 
     navigate(`${location.pathname}?${params.toString()}`);
@@ -57,13 +62,15 @@ const FindUsersPage: React.FC = () => {
       ) : (
         <div>
           <FindUser />
-          <Paginator
-            currentPage={currentPage}
-            totalPages={pagesCount}
-            minPagination={minPagination}
-            maxPagination={maxPagination}
-            pagesCount={pagesCount}
-          />
+
+          <Stack alignItems="center">
+            <Pagination
+              count={pagesCount}
+              defaultPage={currentPage}
+              color="primary"
+              onChange={(e, value) => dispatch(actions.changePage(value))}
+            />
+          </Stack>
         </div>
       )}
     </div>

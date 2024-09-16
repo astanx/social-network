@@ -8,13 +8,13 @@
     align-items: center;
     gap: 5px;
     margin: 10px;
-    border: 2px solid cyan;
+    border: 2px solid #1976d2;
     max-height: 200px;
 }
 
 .link {
     text-decoration: none;
-    color: whitesmoke;
+    color: #1976d2;
     display: flex;
     justify-content: space-between;
 }
