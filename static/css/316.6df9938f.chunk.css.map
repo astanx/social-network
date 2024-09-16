@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/316.6df9938f.chunk.css","mappings":"AACA,uCACI,YAAa,CAEb,WAAY,CADZ,eAEJ","sources":["components/Messages/Dialog/SendMessage/SendMessage.module.css"],"sourcesContent":["\r\n.SendMessage button {\r\n    display: flex;\r\n    margin-top: 10px;\r\n    height: 30px;\r\n}"],"names":[],"sourceRoot":""}
