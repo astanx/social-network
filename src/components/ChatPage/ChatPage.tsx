@@ -4,6 +4,11 @@ import UserMessage from "../UserMessage/UserMessage.tsx";
 import Preloader from "../UI/Preloader/Preloader.jsx";
 import withAuth from "../hoc/withAuth.tsx";
 import classes from './ChatPage.module.css'
+import { chatAPI } from "../../api/chatPageApi.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { actions, ChatActionsTypes, startListeningMessages, stopListeningMessages } from "../../redux/chatReducer.ts";
+import { AppStateType } from "../../redux/storeRedux.ts";
+import { ThunkDispatch } from "redux-thunk";
 
 export type ChatMessageType = {
   message: string;
@@ -14,47 +19,16 @@ export type ChatMessageType = {
 };
 
 const ChatPage = () => {
-  const [messagesData, setMessagesData] = useState<ChatMessageType[]>([]);
-  const [ws, setWs] = useState<WebSocket | null>(null);
-  const [isFetching, setIsFetching] = useState(true);
-  function connect() {
-    const websocket = new WebSocket(
-      "wss://social-network.samuraijs.com/handlers/ChatHandler.ashx"
-    );
-    
-    const handleClose = (e) => {
-      setTimeout(function () {
-        connect();
-      }, 1000);
-    };
-    websocket.onclose = handleClose;
-    websocket.onerror = (e) => {
-      console.error("WebSocket error:", e);
-   };
-    return websocket;
-  }
+  const dispatch: ThunkDispatch<AppStateType, void, ChatActionsTypes > = useDispatch()
+  const messagesData = useSelector((s: AppStateType) => s.chat.messages)
+  const isFetching = useSelector((s: AppStateType) => s.chat.isFetching)
   useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-
-      const newMessages: ChatMessageType[] = JSON.parse(e.data)
-      setMessagesData((prevMessages) => [...prevMessages, ...newMessages]);
-      setIsFetching(false);
-    };
-    ws?.addEventListener('message', handleMessage)
-  }, [ws])
-  useEffect(() => {
-    if (!ws) {
-      console.log('connected');
-      
-      const websocket = connect();
-      setWs(websocket);
-    }
-  
+    dispatch(startListeningMessages())
     return () => {
-      setIsFetching(true);
-      ws?.close();
-    };
-  }, [ws]);
+      dispatch(stopListeningMessages())
+    }
+  }, [])
+  
 
   const messages = messagesData.map((message, index) => (
     <UserMessage
@@ -72,7 +46,7 @@ const ChatPage = () => {
   ) : (
     <div>
       <div className={classes.chatContainer}>{messages.length > 0 ? messages : <p>No messages yet.</p>}</div>
-      <SendMessage ws={ws} friendId={0} login={null} />
+      <SendMessage ws={true} friendId={0} login={null} />
     </div>
   );
 };

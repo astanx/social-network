@@ -9,7 +9,7 @@ let initialState = {
 
 const appReducer = (
   state = initialState,
-  action: ActionsTypes
+  action: AppActionsTypes
 ): InitialStateType => {
   switch (action.type) {
     case "INITIALIZE":
@@ -22,14 +22,20 @@ const appReducer = (
   }
 };
 
-type ActionsTypes =  InferActionsTypes<typeof actions>
 
 
+export type AppActionsTypes = InferActionsTypes<typeof actions>;
+export type ThunkType<ReturnType = void> = ThunkAction<
+ReturnType,
+AppStateType,
+unknown,
+AppActionsTypes
+>;
 
 export const actions = { initialize: () => ({ type: "INITIALIZE" }),
 }
 export const inicialization =
-  (): ThunkAction<Promise<void>, AppStateType, void, ActionsTypes> =>
+  (): ThunkType =>
   async (dispatch) => {
     await dispatch(auth());
     dispatch(actions.initialize());

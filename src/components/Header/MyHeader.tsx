@@ -21,7 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const pages = ["Profile", "Messages", "Find User", 'Chat'];
+const pages = ["profile", "messages", "find User", 'chat'];
 
 const MyHeader: React.FC = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

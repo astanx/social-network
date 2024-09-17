@@ -44,8 +44,7 @@ const Dialog: React.FC<DialogPropsType> = (props) => {
       <div className={classes.message}>{Dialog}</div>
       <SendMessage
         friendId={Number(userId)}
-        login={props.login}
-      />
+        login={props.login} ws={undefined}      />
     </div>
   ) : null;
 };

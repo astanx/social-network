@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import classes from "./SendMessage.module.css";
 
-
 import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import {
@@ -12,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { AppStateType } from "../../../../redux/storeRedux.ts";
 import { TextField } from "@mui/material";
+import { sendMessageChat } from "../../../../redux/chatReducer.ts";
 
 type FormValuesType = {
   messageText: string;
@@ -20,7 +20,7 @@ type FormValuesType = {
 type SendMessagePropsType = {
   friendId: number;
   login: string | null;
-  ws: any
+  ws: any;
 };
 
 const SendMessage: React.FC<SendMessagePropsType> = (props) => {
@@ -35,16 +35,14 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
 
   const submit = (data) => {
     if (props.ws) {
-      props.ws.send(data.messageText)
-      reset()
-    }
-    else if (data.messageText.trim() !== "") {
+      dispatch(sendMessageChat(data.messageText));
+      reset();
+    } else if (data.messageText.trim() !== "") {
       dispatch(sendMessage(props.friendId, data.messageText));
       reset();
     }
   };
 
-  
   return (
     <form onSubmit={handleSubmit(submit)} className={classes.SendMessage}>
       <TextField
@@ -55,7 +53,13 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
         autoComplete="off"
         {...register("messageText", { required: true })}
       />
-      <Button variant="contained" type="submit" disabled={props.ws ? props.ws.readyState !== 1 : false}>Send</Button>
+      <Button
+        variant="contained"
+        type="submit"
+        disabled={false}
+      >
+        Send
+      </Button>
     </form>
   );
 };

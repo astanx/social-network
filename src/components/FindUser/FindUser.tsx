@@ -37,6 +37,7 @@ const FindUser: React.FC = () => {
       isLogined={isLogined}
     />
   ));
+  console.log(friend);
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -53,6 +54,10 @@ const FindUser: React.FC = () => {
     navigate(`?term=${data.term}&friend=${data.friend}&page=${currentPage}`);
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(actions.setFilter(term, e.target.checked, 1));
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit(submit)} className={classes.form}>
@@ -67,8 +72,13 @@ const FindUser: React.FC = () => {
         <FormGroup>
           <FormControlLabel
             label="Only Followed"
-            control={<Checkbox />}
-            {...register("friend")}
+            control={
+              <Checkbox
+                {...register("friend")}
+                checked={friend || false}
+                onChange={handleCheckboxChange}
+              />
+            }
           />
         </FormGroup>
         <Button variant="contained" type="submit">

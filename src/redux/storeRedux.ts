@@ -6,10 +6,11 @@ import messagesReducer from "./messagesReducer.ts";
 import findUserReducer from "./findUserReducer.ts";
 import loginReducer from "./loginReducer.ts";
 import appReducer from "./appReducer.ts";
+import chatReducer from "./chatReducer.ts";
 
 const RootReducer = combineReducers({profile: profileReducer,
   messages: messagesReducer,
-
+  chat: chatReducer,
   findUser: findUserReducer,
   login: loginReducer,
   app: appReducer,})
