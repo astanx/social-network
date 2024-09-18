@@ -35,7 +35,7 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
   } = useForm<FormValuesType>({});
 
   const submit = (data) => {
-    if (props.ws && props.status == "open") {
+    if (props.ws && props.status === "open") {
 
       dispatch(sendMessageChat(data.messageText));
       reset();
@@ -58,7 +58,7 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
       <Button
         variant="contained"
         type="submit"
-        disabled={props.ws ? (props.status == "open" ? false : true) : false}
+        disabled={props.ws ? (props.status === "open" ? false : true) : false}
       >
         Send
       </Button>

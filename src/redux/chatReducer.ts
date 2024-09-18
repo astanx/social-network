@@ -72,6 +72,11 @@ export const actions = {
     status,
   }),
 };
+export const sendMessageChat =
+  (message: string): ThunkType =>
+  async (dispatch) => {
+    chatAPI.sendMessage(message);
+  };
 
 let _messageHandler: ((messages: Array<ChatMessageType>) => void) | null = null;
 let isSubscribed = false
@@ -83,11 +88,7 @@ const messagesHandlerCreator = (dispatch: Dispatch) => {
   }
   return _messageHandler;
 };
-export const sendMessageChat =
-  (message: string): ThunkType =>
-  async (dispatch) => {
-    chatAPI.sendMessage(message);
-  };
+
 export const startListeningMessages = (): ThunkType => async (dispatch) => {
   if (!isSubscribed){
   dispatch(actions.setStatus("pending"));
@@ -100,10 +101,10 @@ export const startListeningMessages = (): ThunkType => async (dispatch) => {
   
 };
 export const stopListeningMessages = (): ThunkType => async (dispatch) => {
-  if (isSubscribed){
-  chatAPI.unsubscribe(messagesHandlerCreator(dispatch));
-  isSubscribed = false
-  }
+  // if (isSubscribed){
+  // chatAPI.unsubscribe(messagesHandlerCreator(dispatch));
+  // isSubscribed = false
+  // }
 };
 
 export default chatReducer;
