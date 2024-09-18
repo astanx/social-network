@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import classes from "./SendMessage.module.css";
 
 import Button from "@mui/material/Button";
@@ -21,6 +21,7 @@ type SendMessagePropsType = {
   friendId: number;
   login: string | null;
   ws: any;
+  status?: string;
 };
 
 const SendMessage: React.FC<SendMessagePropsType> = (props) => {
@@ -34,7 +35,8 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
   } = useForm<FormValuesType>({});
 
   const submit = (data) => {
-    if (props.ws) {
+    if (props.ws && props.status == "open") {
+
       dispatch(sendMessageChat(data.messageText));
       reset();
     } else if (data.messageText.trim() !== "") {
@@ -56,7 +58,7 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
       <Button
         variant="contained"
         type="submit"
-        disabled={false}
+        disabled={props.ws ? (props.status == "open" ? false : true) : false}
       >
         Send
       </Button>

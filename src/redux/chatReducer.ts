@@ -8,6 +8,7 @@ import { SetFetchingActionType } from "./types/types.ts";
 const initialState = {
   messages: [] as Array<ChatMessageType>,
   isFetching: false,
+  status: "pending" as StatusType,
 };
 
 export type InitialStateType = typeof initialState;
@@ -16,12 +17,12 @@ type SetMessagesAction = {
   type: "SET_MESSAGES";
   messages: Array<ChatMessageType>;
 };
+type StatusType = "pending" | "open";
 
-type SendMessageAction = {
-  type: "SEND_MESSAGE";
-  message: ChatMessageType;
+type StatusActionType = {
+  type: "SET_WS_STATUS";
+  status: StatusType;
 };
-
 export type ChatActionsTypes = InferActionsTypes<typeof actions>;
 export type ThunkType<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -35,24 +36,22 @@ const chatReducer = (
   action: ChatActionsTypes
 ): InitialStateType => {
   switch (action.type) {
-    case "SET_MESSAGES":
-      // Создаем новый массив, который будет включать только уникальные сообщения
-      const newMessages = action.messages.filter(newMessage => 
-        !state.messages.some(existingMessage =>
-          existingMessage.message === newMessage.message &&
-          existingMessage.userId === newMessage.userId &&
-          existingMessage.timestamp === newMessage.timestamp
-        )
-      );
+    case "SET_MESSAGES": {
 
       return {
         ...state,
-        messages: [...state.messages, ...newMessages],
+        messages: [...state.messages, ...action.messages],
       };
+    }
     case "SET_FETCHING":
       return {
         ...state,
         isFetching: action.isFetching,
+      };
+    case "SET_WS_STATUS":
+      return {
+        ...state,
+        status: action.status,
       };
     default:
       return state;
@@ -68,9 +67,14 @@ export const actions = {
     type: "SET_FETCHING",
     isFetching,
   }),
+  setStatus: (status: StatusType): StatusActionType => ({
+    type: "SET_WS_STATUS",
+    status,
+  }),
 };
 
 let _messageHandler: ((messages: Array<ChatMessageType>) => void) | null = null;
+let isSubscribed = false
 const messagesHandlerCreator = (dispatch: Dispatch) => {
   if (_messageHandler === null) {
     _messageHandler = (messages: Array<ChatMessageType>) => {
@@ -85,11 +89,21 @@ export const sendMessageChat =
     chatAPI.sendMessage(message);
   };
 export const startListeningMessages = (): ThunkType => async (dispatch) => {
+  if (!isSubscribed){
+  dispatch(actions.setStatus("pending"));
   chatAPI.connect();
+  dispatch(actions.setStatus("open"));
+
   chatAPI.subscribe(messagesHandlerCreator(dispatch));
+  isSubscribed = true
+  }
+  
 };
 export const stopListeningMessages = (): ThunkType => async (dispatch) => {
+  if (isSubscribed){
   chatAPI.unsubscribe(messagesHandlerCreator(dispatch));
+  isSubscribed = false
+  }
 };
 
 export default chatReducer;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import classes from "./Dialog.module.css";
 import UserMessage from "../../UserMessage/UserMessage.tsx";
 import SendMessage from "./SendMessage/SendMessage.tsx";
@@ -18,13 +18,19 @@ type DialogPropsType = {
 const Dialog: React.FC<DialogPropsType> = (props) => {
   const moment = require('moment-timezone')
   const { userId } = useParams();
+  const bottomOfDialogRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (bottomOfDialogRef.current) {
+      bottomOfDialogRef.current.scrollIntoView();
+    }
+  }, [props.DialogData]);
 
   const Dialog =
     props.DialogData &&
     props.DialogData.items &&
     props.DialogData.items.length > 0
       ? props.DialogData?.items.map((dialog) => (
-          <UserMessage
+          <><UserMessage
           isDeletable={true}
           viewed={dialog.viewed}
           message={dialog.body}
@@ -36,12 +42,14 @@ const Dialog: React.FC<DialogPropsType> = (props) => {
           deleteMessage={deleteMessage}
           time={moment.utc(dialog.addedAt).tz('Europe/Moscow').format('YYYY-MM-DD HH:mm')}
          />
+          <div ref={bottomOfDialogRef}></div>
+         </>
         ))
       : null;
 
   return userId ? (
     <div>
-      <div className={classes.message}>{Dialog}</div>
+      <div className={classes.message} style={{overflowY: 'auto', height:'80vh'}}>{Dialog}</div>  
       <SendMessage
         friendId={Number(userId)}
         login={props.login} ws={undefined}      />

@@ -60,7 +60,7 @@ const MyHeader: React.FC = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img className={classes.logo} src={company_logo} />
+          <img className={classes.logo} src={company_logo} alt="logo" />
           <Typography
             variant="h6"
             noWrap

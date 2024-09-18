@@ -21,7 +21,7 @@ const MessageList: React.FC<MessageListPropsType> = (props) => {
       id={message.id}
       key={message.id} isDeletable={false} />
   ));
-  return <div className={classes.MessageList}>{Messages}</div>;
+  return <div className={classes.MessageList} style={{overflowY: 'auto', height: '80vh'}}>{Messages}</div>;
 };
 
 export default MessageList;
