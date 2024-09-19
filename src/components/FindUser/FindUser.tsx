@@ -37,8 +37,6 @@ const FindUser: React.FC = () => {
       isLogined={isLogined}
     />
   ));
-  console.log(friend);
-
   const { register, handleSubmit } = useForm({
     defaultValues: {
       term,

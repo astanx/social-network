@@ -68,7 +68,7 @@ const ProfileData: React.FC<ProfileDataProps & EditingProps> = ({
   };
 
   return (
-    <Box className={classes.Info} sx={{ padding: 2 }}>
+    <Box className={classes.Info} sx={{ padding: 2, height: '50vh'}}>
       <Box className={classes.contact} sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
           src={

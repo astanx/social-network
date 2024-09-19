@@ -17,14 +17,14 @@ const connect = () => {
 
   const handleClose = () => {
     subscribers = [];
-    setTimeout(connect, 1000); 
+
+    setTimeout(connect, 1000);
   };
 
   const handleMessage = (e: MessageEvent) => {
     const newMessages: ChatMessageType[] = JSON.parse(e.data);
     subscribers.forEach((s) => s(newMessages));
-  }
-
+  };
   websocket.onclose = handleClose;
   websocket.onmessage = handleMessage;
 
@@ -37,13 +37,13 @@ export const chatAPI = {
     subscribers.push(callback);
   },
   unsubscribe: (callback: SubscriberType) => {
-    subscribers = subscribers.filter(s => s !== callback);
+    subscribers = subscribers.filter((s) => s !== callback);
   },
   sendMessage: (message: string) => {
     if (websocket) {
       websocket.send(message);
     }
-  }
+  },
 };
 
 type SubscriberType = (messages: Array<ChatMessageType>) => void;

@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "./MyProfile.module.css";
+
 import MyUser from "./MyUser/MyUser.tsx";
 import MyPosts from "./MyPosts/MyPosts.tsx";
 import { ProfilePropsType } from "../../redux/types/types";
@@ -24,7 +24,7 @@ const Profile: React.FC<ProfilePropsType> = (props) => {
   const photo = useSelector((s: AppStateType) => s.profile.photo)
   const login = useSelector((s: AppStateType) => s.profile.login)
   return (
-    <div className={classes.content}>
+    <div>
       <MyUser
       login={login}
         isMyUser={props.isMyUser}

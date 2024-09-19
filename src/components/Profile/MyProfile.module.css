@@ -1,6 +1,6 @@
 .content {
-  grid-area: content;
   background-color: whitesmoke;
+  height: 80vh;
 }
 .preloader{
   width: 100%;

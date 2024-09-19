@@ -1,6 +1,8 @@
 .content {
-  grid-area: content;
+  height: 80vh;
   background-color: whitesmoke;
+  display: flex;
+  justify-content: center;
 }
 
 .content h3 {
