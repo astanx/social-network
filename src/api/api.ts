@@ -5,7 +5,7 @@ import {
   MessagesListDataType,
   UserProfileType,
 } from "../redux/types/types";
-const API_KEY = "82f5a9d1-dfdf-42e1-b6dd-18178cca8f2e";
+const API_KEY = "a83b103e-23b0-41c5-b818-1707e71fa142";
 const intense = axios.create({
   withCredentials: true,
   baseURL: "https://social-network.samuraijs.com/api/1.0/",
