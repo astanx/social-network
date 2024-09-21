@@ -24,7 +24,7 @@ type SendMessagePropsType = {
   status?: string;
 };
 
-const SendMessage: React.FC<SendMessagePropsType> = (props) => {
+const SendMessage: React.FC<SendMessagePropsType> = React.memo((props) => {
   const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> =
     useDispatch();
   const {
@@ -64,6 +64,6 @@ const SendMessage: React.FC<SendMessagePropsType> = (props) => {
       </Button>
     </form>
   );
-};
+});
 
 export default SendMessage;

@@ -26,7 +26,7 @@ type UserMessagePropsType = {
   viewed?: boolean;
 };
 
-const UserMessage: React.FC<UserMessagePropsType> = (props) => {
+const UserMessage: React.FC<UserMessagePropsType> = React.memo((props) => {
   const messageId = props.messageId || 2;
   const dispatch: ThunkDispatch<AppStateType, void, MessagesActionsTypes> = 
     useDispatch();
@@ -72,6 +72,6 @@ const UserMessage: React.FC<UserMessagePropsType> = (props) => {
       <User />
     </div>
   );
-};
+});
 
 export default UserMessage;

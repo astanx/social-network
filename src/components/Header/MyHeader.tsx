@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classes from "./MyHeader.module.css";
 import company_logo from "./../UI/Images/company_logo.png";
 import { useNavigate } from "react-router-dom";
-
 import Container from "@mui/material/Container";
-
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "../../redux/storeRedux";
@@ -21,41 +19,68 @@ import {
   Typography,
 } from "@mui/material";
 
-const pages = ["profile", "messages", "find User", 'chat'];
+const pages = ["profile", "messages", "find User", "chat"];
+
+const UserMenu: React.FC<{ onClose: () => void; anchorEl: null | HTMLElement }> = React.memo(({ onClose, anchorEl }) => {
+  const dispatch: ThunkDispatch<AppStateType, void, LoginActionsTypes> = useDispatch();
+  const navigate = useNavigate();
+
+  return (
+    <Menu
+      sx={{ mt: "45px" }}
+      id="menu-appbar"
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={Boolean(anchorEl)}
+      onClose={onClose}
+    >
+      <MenuItem onClick={() => { navigate("/profile"); onClose(); }}>
+        <Typography sx={{ textAlign: "center" }}>My Profile</Typography>
+      </MenuItem>
+      <MenuItem onClick={() => { dispatch(logout()); onClose(); }}>
+        <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+      </MenuItem>
+    </Menu>
+  );
+});
 
 const MyHeader: React.FC = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const isLogined = useSelector((s: AppStateType) => s.login.email);
-  const dispatch: ThunkDispatch<AppStateType, void, LoginActionsTypes> =
-    useDispatch();
+  const dispatch: ThunkDispatch<AppStateType, void, LoginActionsTypes> = useDispatch();
   const navigate = useNavigate();
   const login = useSelector((s: AppStateType) => s.login.login);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+  const handleNavigation = (page: string) => {
+    navigate(`/${page.replace(/\s/g, "")}`);
+    handleCloseNavMenu();
+  };
+  
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -106,7 +131,7 @@ const MyHeader: React.FC = () => {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={() => { navigate(`/${page.replace(/\s/g, "")}`); handleCloseNavMenu()}}>
+                <MenuItem key={page} onClick={() => handleNavigation(page)}>
                   <Typography sx={{ textAlign: "center" }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -116,7 +141,7 @@ const MyHeader: React.FC = () => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={() => {navigate(`/${page.replace(/\s/g, "")}`);handleCloseNavMenu()}}
+                onClick={() => handleNavigation(page)}
                 sx={{
                   my: 2,
                   color: "white",
@@ -128,16 +153,15 @@ const MyHeader: React.FC = () => {
               </Button>
             ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             {isLogined ? (
-              <MenuItem onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {" "}
+              <>
                 <Typography
-                  id="basic-button"
-                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-controls={anchorElUser ? "basic-menu" : undefined}
                   aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={handleClick}
+                  aria-expanded={anchorElUser ? "true" : undefined}
+                  onClick={handleOpenUserMenu}
                   sx={{
                     my: 2,
                     color: "white",
@@ -147,48 +171,11 @@ const MyHeader: React.FC = () => {
                 >
                   {login}
                 </Typography>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  <MenuItem key={"My Profile"} onClick={handleCloseUserMenu}>
-                    <Typography
-                      sx={{ textAlign: "center" }}
-                      onClick={() => navigate("/profile")}
-                    >
-                      My Profile
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem
-                    key={"Logout"}
-                    onClick={() => {
-                      dispatch(logout());
-                      handleCloseUserMenu();
-                    }}
-                  >
-                    <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-                  </MenuItem>
-                </Menu>
-              </MenuItem>
+                <UserMenu onClose={handleCloseUserMenu} anchorEl={anchorElUser} />
+              </>
             ) : (
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Button
-                  id="basic-button"
-                  aria-controls={open ? "basic-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
                   onClick={() => {
                     navigate("/login");
                     handleCloseUserMenu();
@@ -210,4 +197,5 @@ const MyHeader: React.FC = () => {
     </AppBar>
   );
 };
+
 export default MyHeader;

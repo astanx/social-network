@@ -37,7 +37,6 @@ const chatReducer = (
 ): InitialStateType => {
   switch (action.type) {
     case "SET_MESSAGES": {
-
       return {
         ...state,
         messages: [...state.messages, ...action.messages],
