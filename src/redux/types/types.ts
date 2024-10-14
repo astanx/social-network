@@ -13,7 +13,6 @@ export type UserType = {
   followed: boolean;
 };
 export type MessagesListDataType = {
-  map(arg0: (message: any) => import("react").JSX.Element): unknown;
   id: number;
   userName: string;
   hasNewMessages: boolean;
@@ -98,17 +97,6 @@ export type ProfileStateProps = {
  isMyUser: boolean
 };
 
-type ProfileDispatchProps = {
-  addPost: (userName: string, postText: string) => void;
-  setPhoto: (photo: string) => void;
-  getProfile: (userId: number) => void;
-  createDialog: (userId: number) => void;
-  changeProfile: (profile: UserProfileType, id: number) => void;
-  updateStatus: (status: string) => void;
-  deletePost: (postId: number) => void;
-};
-
-export type ProfilePropsType = any;
 export type ApiResponseType = {
   resultCode: number;
   messages: Array<string>;

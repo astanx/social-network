@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   ChatActionsTypes,
   startListeningMessages,
-  stopListeningMessages,
 } from "../../redux/chatReducer.ts";
 import { AppStateType } from "../../redux/storeRedux.ts";
 import { ThunkDispatch } from "redux-thunk";
@@ -39,9 +38,6 @@ const ChatPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(startListeningMessages());
-    return () => {
-      dispatch(stopListeningMessages());
-    };
   }, [dispatch]);
   useEffect(() => {
     if (bottomOfChatRef.current && isAutoScroll) {

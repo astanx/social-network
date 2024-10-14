@@ -13,6 +13,7 @@ import {
   FormGroup,
   TextField,
 } from "@mui/material";
+import { ApiResponseType } from "../../redux/types/types.ts";
 
 type FormValuesType = {
   email: string;
@@ -29,7 +30,7 @@ type LoginPropsType = {
     password: string;
     rememberMe: boolean;
     captcha: string | null;
-  }) => any;
+  }) => void;
   getCaptcha: () => void;
   auth: () => void;
 };
@@ -55,7 +56,7 @@ const Login: React.FC<LoginPropsType> = ({ isLogined, captcha, login, getCaptcha
     setServerError(null);
 
     try {
-      const response = await login(data);
+      const response = await login(data) as unknown as ApiResponseType;
       if (response?.data?.resultCode === ResultCode.RequiredCaptcha) {
 
         setCaptchaVisible(true);

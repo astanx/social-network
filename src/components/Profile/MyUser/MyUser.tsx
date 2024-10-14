@@ -24,7 +24,7 @@ import {
   Typography,
 } from "@mui/material";
 
-const MyUser: React.FC<any> = (props) => {
+const MyUser: React.FC<ChangeProfileProps & EditingProps & ProfileDataProps> = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   return isEditing && props.isMyUser ? (
     <ChangeProfile
@@ -137,7 +137,7 @@ type ChangeProfileProps = {
   userProfile: UserProfileType | null;
   setPhoto: (file: string) => void;
   updateStatus: (status: string) => void;
-  changeProfile: (data: any, userId: number) => void;
+  changeProfile: (data: FormValues, userId: number) => void;
   photo: string | null;
   id: number | null;
   login: string | null;

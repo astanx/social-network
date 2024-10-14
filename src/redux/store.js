@@ -7,27 +7,27 @@ const store = {
   _state: {
     profile: {
       PostData: [
-        { message: "hello", name: "dimas", logo: logo, time: getTime(), id: 1 },
-        { message: "hello", name: "dimas", logo: logo, time: getTime(), id: 2 },
-        { message: "hello", name: "dimas", logo: logo, time: getTime(), id: 3 },
+        { message: "hello", name: "dima", logo: logo, time: getTime(), id: 1 },
+        { message: "hello", name: "dima", logo: logo, time: getTime(), id: 2 },
+        { message: "hello", name: "dima", logo: logo, time: getTime(), id: 3 },
       ],
     },
     messages: {
       MessagesData: [
-        { message: "hello", name: "dimas", logo: logo, id: 1 },
-        { message: "hello", name: "sanya", logo: logo, id: 2 },
+        { message: "hello", name: "dima", logo: logo, id: 1 },
+        { message: "hello", name: "sasha", logo: logo, id: 2 },
         { message: "hello", name: "danya", logo: logo, id: 3 },
       ],
       DialogData: [
-        { message: "hello", name: "dimas", logo: logo, id: 1 },
-        { message: "hello", name: "sanya", logo: logo, id: 2 },
+        { message: "hello", name: "dima", logo: logo, id: 1 },
+        { message: "hello", name: "sasha", logo: logo, id: 2 },
         { message: "hello", name: "danya", logo: logo, id: 3 },
       ],
     },
     friends: {
       active: [
-        { name: "dimas", logo: logo, id: 1 },
-        { name: "sanya", logo: logo, id: 2 },
+        { name: "dima", logo: logo, id: 1 },
+        { name: "sasha", logo: logo, id: 2 },
         { name: "danya", logo: logo, id: 3 },
       ],
     },

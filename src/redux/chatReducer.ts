@@ -99,11 +99,6 @@ export const startListeningMessages = (): ThunkType => async (dispatch) => {
   }
   
 };
-export const stopListeningMessages = (): ThunkType => async (dispatch) => {
-  // if (isSubscribed){
-  // chatAPI.unsubscribe(messagesHandlerCreator(dispatch));
-  // isSubscribed = false
-  // }
-};
+
 
 export default chatReducer;

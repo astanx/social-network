@@ -17,7 +17,6 @@ const connect = () => {
 
   const handleClose = () => {
     subscribers = [];
-
     setTimeout(connect, 1000);
   };
 
