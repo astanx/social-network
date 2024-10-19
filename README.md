@@ -6,5 +6,5 @@
 ## 📝 Логин для тестирования
 Чтобы ознакомиться с функционалом, используйте следующие данные на сайте https://ivan-astan.github.io/social-network/:
 
-- <strong>Email:</strong> testuser@example.com
-- <strong>Пароль:</strong> testpassword
+- <strong>Email:</strong> astanin.i.a@gmail.com
+- <strong>Пароль:</strong> free
